@@ -21,7 +21,7 @@ export function NavBar() {
       }}>
         {/* Logo */}
         <Link href="/" style={{ marginRight: 12, flexShrink: 0, lineHeight: 0 }}>
-          <Image src="/logo.png" alt="GroupsPorn" width={180} height={40} style={{ objectFit: 'contain' }} />
+          <Image src="/logo.png" alt="GroupsPorn" width={180} height={40} className="logo" style={{ objectFit: 'contain' }} />
         </Link>
 
         {/* Desktop nav links */}

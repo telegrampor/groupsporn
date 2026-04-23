@@ -56,21 +56,21 @@ const TOP_CATEGORIES = [
 
 const FAQ: [string, string][] = [
   [`What is ${SITE_NAME}?`,
-   `${SITE_NAME} is the #1 curated directory for NSFW Telegram groups, channels, bots, AI tools, and 1.8M+ OnlyFans creators. All communities are verified and updated daily.`],
-  ['How do I join a Telegram group from this directory?',
+   `${SITE_NAME} is the #1 curated directory for NSFW Telegram groups, bots, AI tools, and 1.8M+ OnlyFans creators. All communities are verified and updated daily.`],
+  ['How do I join a Telegram group?',
    'Click any group card and tap "Join". You will be redirected to Telegram instantly. The Telegram app must be installed on your device.'],
-  ['Is this site free to use?',
-   `Yes. ${SITE_NAME} is 100% free to browse. No account, registration, or payment required.`],
+  ['Is this site free?',
+   `Yes. ${SITE_NAME} is 100% free to browse. No account or payment required.`],
   ['How are groups verified?',
-   'Our team manually reviews each submission for authenticity, activity, and content quality before publishing. Groups are re-checked regularly.'],
-  [`What is the OnlyFans Search feature?`,
-   'The OnlyFans Search gives you access to over 1.8 million OnlyFans creator profiles. Search by name, username, or category to find creators you love.'],
-  ['Can I submit my Telegram group or channel?',
-   'Yes. Click "+Add" in the navbar. Your submission will be reviewed and published within 24–48 hours if it meets our content guidelines.'],
+   'Our team manually reviews each submission for authenticity and content quality before publishing. Groups are re-checked regularly.'],
+  ['What is the OnlyFans Search feature?',
+   'The OnlyFans Search gives you access to over 1.8 million OnlyFans creator profiles. Search by name, username, or category.'],
+  ['Can I submit my Telegram group?',
+   'Yes. Click "+Add" in the navbar. Your submission is reviewed and published within 24–48 hours if it meets our guidelines.'],
   ['What AI NSFW tools are listed?',
-   `${SITE_NAME} indexes AI companions, NSFW image generators, AI chatbots, and other adult AI tools. Browse the AI NSFW section to discover the best tools available.`],
-  ['Is it safe and private to use this directory?',
-   `${SITE_NAME} only lists publicly available Telegram groups. We do not collect personal data. All redirects use official Telegram links. This site is intended for adults 18+ only.`],
+   `${SITE_NAME} indexes AI companions, NSFW image generators, AI chatbots, and other adult AI tools.`],
+  ['Is it safe to use this directory?',
+   `${SITE_NAME} only lists publicly available Telegram groups. We do not collect personal data. All redirects use official Telegram links. Adults 18+ only.`],
 ]
 
 export default async function HomePage() {
@@ -82,18 +82,16 @@ export default async function HomePage() {
   return (
     <main>
 
-      {/* ═══════════════════════════════════════
-          HERO + STATS
-      ═══════════════════════════════════════ */}
-      <section className="hero-section" style={{
-        background: 'radial-gradient(ellipse at 50% 0%, rgba(232,53,109,0.15) 0%, transparent 60%)',
-        textAlign: 'center',
-      }}>
-
-        {/* Hero content */}
+      {/* ═══ HERO + STATS ═══ */}
+      <section
+        className="hero-section"
+        style={{
+          background: 'radial-gradient(ellipse at 50% 0%, rgba(232,53,109,0.15) 0%, transparent 60%)',
+        }}
+      >
         <div style={{ maxWidth: 700, margin: '0 auto 48px' }}>
 
-          {/* Animated badge */}
+          {/* Badge */}
           <div style={{
             display: 'inline-flex', alignItems: 'center', gap: 9,
             border: '1px solid #2a2a32', borderRadius: 999,
@@ -104,13 +102,12 @@ export default async function HomePage() {
             The #1 NSFW &amp; Porn Telegram and AI Directory
           </div>
 
-          {/* H1 */}
-          <h1 className="hero-h1" style={{
-            fontWeight: 900, lineHeight: 1.1,
-            color: '#f0f0f5', maxWidth: 700,
-            margin: '0 auto 16px', letterSpacing: '-1.5px',
-          }}>
-            Discover NSFW &amp; Porn<br />
+          {/* H1 — exact JSX as specified */}
+          <h1
+            className="hero-h1"
+            style={{ textAlign: 'center', fontWeight: 900, letterSpacing: '-1px', margin: '0 auto 16px' }}
+          >
+            Discover <span style={{ whiteSpace: 'nowrap' }}>NSFW &amp; Porn</span>{' '}
             Telegram groups,{' '}
             <span style={{ color: '#e8356d' }}>bots &amp; AI</span>
           </h1>
@@ -118,7 +115,7 @@ export default async function HomePage() {
           {/* Subtitle */}
           <p style={{
             fontSize: 16, color: '#9898aa', lineHeight: 1.6,
-            maxWidth: 500, margin: '0 auto 36px',
+            maxWidth: 500, margin: '0 auto 36px', textAlign: 'center',
           }}>
             Your #1 hub for NSFW Telegram groups &amp; bots, AI companions &amp; tools,
             and 1.8M+ OnlyFans creators. Explore and save your favorites all in one place.
@@ -128,61 +125,58 @@ export default async function HomePage() {
           <div className="hero-ctas">
             <Link href="/groups" style={{
               display: 'inline-flex', alignItems: 'center', gap: 8,
-              background: '#0ea5e9', color: '#fff', padding: '12px 20px',
-              borderRadius: 8, fontWeight: 600, fontSize: 14,
-              textDecoration: 'none', whiteSpace: 'nowrap',
+              background: '#0ea5e9', color: '#fff',
+              padding: '12px 20px', borderRadius: 8,
+              fontWeight: 600, fontSize: 14, textDecoration: 'none', whiteSpace: 'nowrap',
             }}>
               <Send size={15} /> Explore Groups
             </Link>
             <Link href="/bots" style={{
               display: 'inline-flex', alignItems: 'center', gap: 8,
-              background: '#0ea5e9', color: '#fff', padding: '12px 20px',
-              borderRadius: 8, fontWeight: 600, fontSize: 14,
-              textDecoration: 'none', whiteSpace: 'nowrap',
+              background: '#0ea5e9', color: '#fff',
+              padding: '12px 20px', borderRadius: 8,
+              fontWeight: 600, fontSize: 14, textDecoration: 'none', whiteSpace: 'nowrap',
             }}>
               <Lock size={15} /> Explore Bots
             </Link>
             <Link href="/ainsfw" style={{
               display: 'inline-flex', alignItems: 'center', gap: 8,
-              background: '#e8356d', color: '#fff', padding: '12px 20px',
-              borderRadius: 8, fontWeight: 600, fontSize: 14,
-              textDecoration: 'none', whiteSpace: 'nowrap',
+              background: '#e8356d', color: '#fff',
+              padding: '12px 20px', borderRadius: 8,
+              fontWeight: 600, fontSize: 14, textDecoration: 'none', whiteSpace: 'nowrap',
             }}>
               <Sparkles size={15} /> Explore AI NSFW
             </Link>
             <Link href="/ofsearch" style={{
               display: 'inline-flex', alignItems: 'center', gap: 8,
-              background: '#0ea5e9', color: '#fff', padding: '12px 20px',
-              borderRadius: 8, fontWeight: 600, fontSize: 14,
-              textDecoration: 'none', whiteSpace: 'nowrap',
+              background: '#0ea5e9', color: '#fff',
+              padding: '12px 20px', borderRadius: 8,
+              fontWeight: 600, fontSize: 14, textDecoration: 'none', whiteSpace: 'nowrap',
             }}>
               <Search size={15} />
               ONLYFANS SEARCH
-              <span style={{ fontSize: 11, opacity: 0.8, fontWeight: 500 }}>+1.8M creators</span>
+              <span style={{ fontSize: 11, opacity: 0.8, fontWeight: 500 }}>+1.8M</span>
             </Link>
           </div>
 
         </div>
 
-        {/* Stats bar */}
-        <div className="hero-stats" style={{ maxWidth: 800, margin: '0 auto' }}>
+        {/* Stats */}
+        <div className="stats-grid" style={{ maxWidth: 800, margin: '0 auto' }}>
           <StatCard value="+5K"       label="Groups" />
-          <StatCard value="0"         label="Visiting Now"     pulse />
-          <StatCard value="4,981,220" label="Views"            pulse />
+          <StatCard value="0"         label="Visiting Now"      pulse />
+          <StatCard value="4,981,220" label="Views"             pulse />
           <StatCard value="+1.8M"     label="OnlyFans Creators" />
         </div>
 
       </section>
 
-      {/* ═══════════════════════════════════════
-          FRESH NEW ADDITIONS
-      ═══════════════════════════════════════ */}
+      {/* ═══ FRESH NEW ADDITIONS ═══ */}
       {fresh.length > 0 && (
         <section style={{ padding: '64px 24px', textAlign: 'center' }}>
 
           <h2 style={{ fontSize: 40, fontWeight: 800, color: '#f0f0f5', marginBottom: 8 }}>
-            Fresh{' '}
-            <span style={{ color: '#e8356d' }}>New Additions</span>
+            Fresh <span style={{ color: '#e8356d' }}>New Additions</span>
           </h2>
           <p style={{ color: '#9898aa', fontSize: 14, marginBottom: 32 }}>
             The latest groups added to {SITE_NAME} — updated daily
@@ -196,21 +190,18 @@ export default async function HomePage() {
                 overflow: 'hidden', background: '#141417',
                 textDecoration: 'none', border: '1px solid #2a2a32',
               }}>
-                {/* Image */}
                 {g.thumbnail_url && (
                   <Image
                     src={g.thumbnail_url} alt={g.name} fill
-                    sizes="(max-width: 640px) 50vw, (max-width: 900px) 33vw, 280px"
+                    sizes="(max-width: 768px) 50vw, (max-width: 900px) 33vw, 280px"
                     style={{ objectFit: 'cover' }}
                   />
                 )}
-
-                {/* Bottom gradient overlay */}
+                {/* Gradient */}
                 <div style={{
                   position: 'absolute', bottom: 0, left: 0, right: 0, height: '60%',
                   background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%)',
                 }} />
-
                 {/* NEW badge */}
                 {g.is_new && (
                   <span style={{
@@ -221,12 +212,8 @@ export default async function HomePage() {
                     textTransform: 'uppercase',
                   }}>New</span>
                 )}
-
-                {/* Name + category */}
-                <div style={{
-                  position: 'absolute', bottom: 12, left: 12, right: 12,
-                  textAlign: 'left',
-                }}>
+                {/* Info */}
+                <div style={{ position: 'absolute', bottom: 12, left: 12, right: 12, textAlign: 'left' }}>
                   <p style={{
                     fontSize: 14, fontWeight: 600, color: '#fff',
                     marginBottom: 2, overflow: 'hidden',
@@ -253,14 +240,11 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* ═══════════════════════════════════════
-          CURATED TOP LISTS
-      ═══════════════════════════════════════ */}
+      {/* ═══ CURATED TOP LISTS ═══ */}
       <section style={{ padding: '64px 24px', textAlign: 'center' }}>
 
         <h2 style={{ fontSize: 40, fontWeight: 800, color: '#f0f0f5', marginBottom: 32 }}>
-          Curated{' '}
-          <span style={{ color: '#e8356d' }}>Top Lists</span>
+          Curated <span style={{ color: '#e8356d' }}>Top Lists</span>
         </h2>
 
         <div className="top-lists-grid" style={{ maxWidth: 1200, margin: '0 auto 20px' }}>
@@ -295,15 +279,12 @@ export default async function HomePage() {
 
       </section>
 
-      {/* ═══════════════════════════════════════
-          LATEST ARTICLES
-      ═══════════════════════════════════════ */}
+      {/* ═══ LATEST ARTICLES ═══ */}
       {articles.length > 0 && (
         <section style={{ padding: '64px 24px', textAlign: 'center' }}>
 
           <h2 style={{ fontSize: 40, fontWeight: 800, color: '#f0f0f5', marginBottom: 32 }}>
-            Latest{' '}
-            <span style={{ color: '#e8356d' }}>Articles</span>
+            Latest <span style={{ color: '#e8356d' }}>Articles</span>
           </h2>
 
           <div className="articles-grid" style={{ maxWidth: 1200, margin: '0 auto' }}>
@@ -325,13 +306,13 @@ export default async function HomePage() {
                   )}
                 </div>
                 <div style={{ padding: 16 }}>
-                  <p className="clamp-2" style={{
-                    fontSize: 15, fontWeight: 700, color: '#f0f0f5', marginBottom: 8,
-                  }}>{article.title}</p>
+                  <p className="clamp-2" style={{ fontSize: 15, fontWeight: 700, color: '#f0f0f5', marginBottom: 8 }}>
+                    {article.title}
+                  </p>
                   {article.excerpt && (
-                    <p className="clamp-2" style={{
-                      fontSize: 13, color: '#9898aa', lineHeight: 1.5, marginBottom: 12,
-                    }}>{article.excerpt}</p>
+                    <p className="clamp-2" style={{ fontSize: 13, color: '#9898aa', lineHeight: 1.5, marginBottom: 12 }}>
+                      {article.excerpt}
+                    </p>
                   )}
                   <p style={{ fontSize: 12, color: '#5a5a6e' }}>
                     By {article.author || SITE_NAME}
@@ -358,14 +339,11 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* ═══════════════════════════════════════
-          FAQ
-      ═══════════════════════════════════════ */}
+      {/* ═══ FAQ ═══ */}
       <section style={{ padding: '64px 24px', textAlign: 'center' }}>
 
         <h2 style={{ fontSize: 40, fontWeight: 800, color: '#f0f0f5', marginBottom: 32 }}>
-          Frequently Asked{' '}
-          <span style={{ color: '#e8356d' }}>Questions</span>
+          Frequently Asked <span style={{ color: '#e8356d' }}>Questions</span>
         </h2>
 
         <script type="application/ld+json" dangerouslySetInnerHTML={{
@@ -391,10 +369,7 @@ export default async function HomePage() {
               }}>
                 {q}
               </summary>
-              <p style={{
-                padding: '0 20px 16px', fontSize: 14,
-                color: '#9898aa', lineHeight: 1.6,
-              }}>
+              <p style={{ padding: '0 20px 16px', fontSize: 14, color: '#9898aa', lineHeight: 1.6 }}>
                 {a}
               </p>
             </details>
@@ -407,26 +382,17 @@ export default async function HomePage() {
   )
 }
 
-function StatCard({
-  value, label, pulse = false,
-}: {
-  value: string
-  label: string
-  pulse?: boolean
-}) {
+function StatCard({ value, label, pulse = false }: { value: string; label: string; pulse?: boolean }) {
   return (
     <div style={{
       background: '#141417', border: '1px solid #2a2a32',
       borderRadius: 12, padding: '20px 28px', textAlign: 'center',
     }}>
-      <p style={{ fontSize: 32, fontWeight: 800, color: '#f0f0f5', marginBottom: 4 }}>
-        {value}
-      </p>
+      <p style={{ fontSize: 32, fontWeight: 800, color: '#f0f0f5', marginBottom: 4 }}>{value}</p>
       <p style={{
-        fontSize: 11, color: '#9898aa',
-        textTransform: 'uppercase', letterSpacing: '1px',
-        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5,
-        margin: 0,
+        fontSize: 11, color: '#9898aa', textTransform: 'uppercase',
+        letterSpacing: '1px', display: 'flex', alignItems: 'center',
+        justifyContent: 'center', gap: 5, margin: 0,
       }}>
         {pulse && <span className="pulse-dot" />}
         {label}
