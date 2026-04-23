@@ -1,0 +1,51 @@
+
+================================================================
+  SEO BOOTSTRAP COMPLETO — TeleNSFW
+  Alvo analisado: erogram.pro
+  2026-04-22 18:04
+================================================================
+
+📊 TRÁFEGO DO CONCORRENTE (SimilarWeb)
+  Visitas mensais (média): ~145,565/mês
+  Período analisado: 3 meses
+
+🔑 SEMRUSH — Keywords analisadas: 43
+  Keyword                                     Vol/mês   Pos     CPC
+  ----------------------------------------------------------------
+  telegram porn                              1,203,000     3       -
+  porn telegram                               436,000    32       -
+  nsfw telegram                               128,000    15       -
+  telegram nsfw                                74,000    33       -
+  creampie telegram                            37,000     4       -
+  nsfw telegram groups                         30,000    35       -
+  erogram                                      28,000     1       -
+  best onlyfans telegram                       19,000    37       -
+  lesbian telegram porn channel                14,000    19       -
+  bdsm xxx telegram                            13,000    34       -
+
+================================================================
+  ▶ QUAIS CATEGORIAS PRIORIZAR NOS PRIMEIROS 50 GRUPOS
+    (ordenado por potencial real de tráfego EN)
+================================================================
+  #   Categoria                   Vol/mês  Pos concorrente     CPC
+  --- ------------------------- ---------  ---------------  ------
+  1   telegram-porn             1,673,800           pos 21       -  ← telegram porn
+  2   nsfw-telegram               164,700           pos 17       -  ← nsfw telegram
+  3   creampie                     40,200           pos 18       -  ← creampie telegram
+  4   onlyfans                     19,000           pos 38       -  ← best onlyfans telegram
+  5   japan                         3,100           pos 18       -  ← telegram japanese porn gr
+  6   anal                          2,100           pos 15       -  ← solo anal telegram
+
+================================================================
+  ✅ BANCO ATUALIZADO:
+  → categories atualizadas/criadas: 6
+  → top_lists criadas/atualizadas:  0
+  → seo_config.category_ranking:    salvo
+
+  📋 AÇÃO IMEDIATA:
+  Use o ranking acima para escolher os 50 grupos do sandbox.
+  Ex: se 'milf' é #1 → coloque os grupos MILF com mais membros primeiro.
+
+  🔜 PRÓXIMO PASSO:
+  python scripts/ingestion/ai_content_generator.py
+================================================================

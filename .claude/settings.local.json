@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx skills *)",
+      "Bash(npx claude-code-templates@latest --skill development/senior-fullstack --yes)",
+      "Bash(npx claude-code-templates@latest --skill web-development/react-best-practices --yes)",
+      "Bash(npx claude-code-templates@latest --skill development/senior-architect --yes)",
+      "Bash(npx skillfish *)",
+      "WebFetch(domain:erogram.pro)",
+      "WebFetch(domain:localhost)",
+      "Bash(curl -s http://localhost:3000)",
+      "Bash(npm run *)"
+    ]
+  }
+}
