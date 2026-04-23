@@ -85,9 +85,8 @@ export default async function HomePage() {
       {/* ═══════════════════════════════════════
           HERO + STATS
       ═══════════════════════════════════════ */}
-      <section style={{
+      <section className="hero-section" style={{
         background: 'radial-gradient(ellipse at 50% 0%, rgba(232,53,109,0.15) 0%, transparent 60%)',
-        padding: '80px 24px 60px',
         textAlign: 'center',
       }}>
 
@@ -106,8 +105,8 @@ export default async function HomePage() {
           </div>
 
           {/* H1 */}
-          <h1 style={{
-            fontSize: 56, fontWeight: 900, lineHeight: 1.1,
+          <h1 className="hero-h1" style={{
+            fontWeight: 900, lineHeight: 1.1,
             color: '#f0f0f5', maxWidth: 700,
             margin: '0 auto 16px', letterSpacing: '-1.5px',
           }}>
@@ -242,13 +241,13 @@ export default async function HomePage() {
             ))}
           </div>
 
-          <Link href="/groups" style={{
-            display: 'inline-block', marginTop: 32,
+          <Link href="/groups" className="browse-btn" style={{
+            marginTop: 32,
             background: '#e8356d', color: '#fff',
             padding: '12px 28px', borderRadius: 8,
             fontWeight: 600, fontSize: 14, textDecoration: 'none',
           }}>
-            Browse All Groups
+            Browse All Groups →
           </Link>
 
         </section>
@@ -269,7 +268,7 @@ export default async function HomePage() {
             <Link
               key={cat.slug}
               href={`/best-telegram-groups/${cat.slug}`}
-              className="card-hover"
+              className="card-hover tl-card"
               style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                 background: '#141417', border: '1px solid #2a2a32',
@@ -278,12 +277,12 @@ export default async function HomePage() {
               }}
             >
               <div>
-                <p style={{ fontSize: 13, fontWeight: 600, color: '#f0f0f5', marginBottom: 2 }}>
+                <p className="tl-title" style={{ fontSize: 13, fontWeight: 600, color: '#f0f0f5', marginBottom: 2 }}>
                   {cat.label}
                 </p>
-                <p style={{ fontSize: 11, color: '#9898aa' }}>Top 10 Collections</p>
+                <p className="tl-sub" style={{ fontSize: 11, color: '#9898aa' }}>Top 10 Collections</p>
               </div>
-              <ChevronRight size={14} style={{ color: '#9898aa', flexShrink: 0, marginLeft: 8 }} />
+              <ChevronRight className="tl-chevron" size={14} style={{ color: '#9898aa', flexShrink: 0, marginLeft: 8 }} />
             </Link>
           ))}
         </div>
@@ -381,7 +380,7 @@ export default async function HomePage() {
 
         <div style={{ maxWidth: 800, margin: '0 auto', textAlign: 'left' }}>
           {FAQ.map(([q, a]) => (
-            <details key={q} style={{
+            <details key={q} className="faq-item" style={{
               background: '#141417', border: '1px solid #2a2a32',
               borderRadius: 10, marginBottom: 8,
             }}>

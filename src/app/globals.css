@@ -43,16 +43,14 @@ body {
   display: inline-block;
   width: 8px; height: 8px;
   background: #22c55e;
-  border-radius: 50%;
-  flex-shrink: 0;
+  border-radius: 50%; flex-shrink: 0;
   animation: pulse-green 2s ease-in-out infinite;
 }
 .pulse-dot-red {
   display: inline-block;
   width: 8px; height: 8px;
   background: #e8356d;
-  border-radius: 50%;
-  flex-shrink: 0;
+  border-radius: 50%; flex-shrink: 0;
   animation: pulse-red 2s ease-in-out infinite;
 }
 @keyframes pulse-green {
@@ -80,33 +78,80 @@ body {
   overflow: hidden;
 }
 
-/* ── Responsive nav ── */
+/* ════════════════════════════════════════
+   NAVBAR
+════════════════════════════════════════ */
 .nav-desktop    { display: flex !important; }
 .nav-mobile-btn { display: none !important; }
+
 @media (max-width: 900px) {
   .nav-desktop    { display: none  !important; }
   .nav-mobile-btn { display: flex  !important; }
   .nav-add-btn    { display: none  !important; }
   .nav-login-btn  { display: none  !important; }
-  .nav-flag       { display: none  !important; }
+  /* nav-flag: visible on mobile (hamburger + flag no lado direito) */
 }
 
-/* ── Hero CTAs (nowrap → wrap mobile) ── */
+/* ════════════════════════════════════════
+   HERO SECTION
+════════════════════════════════════════ */
+
+/* H1 responsivo */
+.hero-h1 { font-size: 56px; }
+@media (max-width: 768px) {
+  .hero-h1 {
+    font-size: 36px !important;
+    letter-spacing: -0.5px !important;
+    line-height: 1.2 !important;
+  }
+}
+
+/* Hero section padding */
+.hero-section { padding: 80px 24px 60px; }
+@media (max-width: 768px) {
+  .hero-section { padding: 40px 16px 36px !important; }
+}
+
+/* ── Hero CTAs: nowrap desktop → grid 2+1+1 mobile ── */
 .hero-ctas {
-  display: flex; gap: 10px;
-  justify-content: center; flex-wrap: nowrap;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: nowrap;
 }
-@media (max-width: 780px) { .hero-ctas { flex-wrap: wrap; } }
+@media (max-width: 780px) {
+  .hero-ctas {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  /* Todos os botões: largura total da célula, conteúdo centrado */
+  .hero-ctas a {
+    display: flex !important;
+    justify-content: center;
+    width: 100%;
+    white-space: nowrap;
+  }
+  /* Botões 3 (AI NSFW) e 4 (OFsearch) ocupam linha completa */
+  .hero-ctas a:nth-child(3),
+  .hero-ctas a:nth-child(4) {
+    grid-column: 1 / -1;
+  }
+}
 
-/* ── Hero stats grid ── */
+/* ── Hero stats: 4 col → 2x2 mobile ── */
 .hero-stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 12px;
 }
-@media (max-width: 640px) { .hero-stats { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px) {
+  .hero-stats { grid-template-columns: repeat(2, 1fr); }
+}
 
-/* ── Fresh additions grid ── */
+/* ════════════════════════════════════════
+   FRESH NEW ADDITIONS
+════════════════════════════════════════ */
 .fresh-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -115,7 +160,21 @@ body {
 @media (max-width: 900px) { .fresh-grid { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width: 640px) { .fresh-grid { grid-template-columns: repeat(2, 1fr); } }
 
-/* ── Top Lists grid (5 col) ── */
+/* Browse All Groups button: 80% largura em mobile, centralizado */
+.browse-btn { display: inline-block; }
+@media (max-width: 640px) {
+  .browse-btn {
+    display: block !important;
+    width: 80% !important;
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+}
+
+/* ════════════════════════════════════════
+   CURATED TOP LISTS
+════════════════════════════════════════ */
 .top-lists-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -125,7 +184,29 @@ body {
 @media (max-width:  800px) { .top-lists-grid { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width:  540px) { .top-lists-grid { grid-template-columns: repeat(2, 1fr); } }
 
-/* ── Articles grid ── */
+/* Cards grandes no mobile: coluna centrada, altura ~120px */
+@media (max-width: 540px) {
+  .tl-card {
+    flex-direction: column !important;
+    align-items: center   !important;
+    justify-content: center !important;
+    text-align: center    !important;
+    min-height: 120px     !important;
+    padding: 20px 12px    !important;
+  }
+  .tl-title {
+    font-size: 15px   !important;
+    font-weight: 700  !important;
+    margin-bottom: 4px !important;
+  }
+  .tl-sub { font-size: 12px !important; }
+  /* Esconde chevron nos cards mobile — layout centrado */
+  .tl-chevron { display: none !important; }
+}
+
+/* ════════════════════════════════════════
+   ARTICLES GRID
+════════════════════════════════════════ */
 .articles-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -134,7 +215,24 @@ body {
 @media (max-width: 900px) { .articles-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 580px) { .articles-grid { grid-template-columns: 1fr; } }
 
-/* ── Footer grid ── */
+/* ════════════════════════════════════════
+   FAQ
+════════════════════════════════════════ */
+
+/* Mobile: força abertura do accordion — conteúdo sempre visível */
+@media (max-width: 768px) {
+  details.faq-item > p {
+    display: block !important;
+  }
+  details.faq-item > summary {
+    cursor: default;
+    pointer-events: none;
+  }
+}
+
+/* ════════════════════════════════════════
+   FOOTER GRID
+════════════════════════════════════════ */
 .footer-grid {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1fr;

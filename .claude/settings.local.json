@@ -9,7 +9,9 @@
       "WebFetch(domain:erogram.pro)",
       "WebFetch(domain:localhost)",
       "Bash(curl -s http://localhost:3000)",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Bash(python -m py_compile scripts/scraper/erogram_scraper.py)",
+      "Bash(py -m py_compile scripts/scraper/erogram_scraper.py)"
     ]
   }
 }

@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { NavBar } from '@/components/layout/NavBar'
+import Image from 'next/image'
 
 const inter = Inter({ subsets: ['latin'], display: 'swap' })
 
@@ -43,12 +44,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
               {/* Brand + tagline */}
               <div>
-                <div style={{
-                  fontWeight: 800, fontSize: 18,
-                  letterSpacing: '-0.5px', marginBottom: 8,
-                }}>
-                  <span style={{ color: '#e8356d' }}>ERO</span>
-                  <span style={{ color: '#f0f0f5' }}>gram</span>
+                <div style={{ marginBottom: 8, lineHeight: 0 }}>
+                  <Image src="/logo.png" alt="GroupsPorn" width={140} height={32} style={{ objectFit: 'contain' }} />
                 </div>
                 <p style={{
                   fontSize: 13, color: '#9898aa',

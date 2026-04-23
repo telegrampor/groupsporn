@@ -1,10 +1,24 @@
 """
-erogram_scraper.py v3
-Coleta grupos do erogram.pro e insere via SQL batch no Supabase.
-Evita ConnectionTerminated fazendo um único INSERT por página.
+erogram_scraper.py v4
+Coleta grupos do erogram.pro e insere/atualiza no Supabase.
+
+Fase 1 — Listing: scrape da listagem paginada (batch upsert)
+Fase 2 — Enrich:  visita cada página individual para coletar
+                   telegram_url e description nos grupos com telegram_url IS NULL
+
+Uso:
+  python scripts/scraper/erogram_scraper.py                  # fases 1 + 2
+  python scripts/scraper/erogram_scraper.py --enrich-only    # só fase 2
+  python scripts/scraper/erogram_scraper.py --target 500 --enrich-limit 300
 """
 
-import os, time, re, requests
+import argparse
+import os
+import re
+import time
+from urllib.parse import unquote
+
+import requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 from supabase import create_client
@@ -14,14 +28,29 @@ load_dotenv()
 SUPABASE_URL = os.environ["NEXT_PUBLIC_SUPABASE_URL"]
 SUPABASE_KEY = os.environ["SUPABASE_SERVICE_ROLE_KEY"]
 BASE_URL     = "https://erogram.pro"
-HEADERS      = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
+HEADERS      = {
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/124.0.0.0 Safari/537.36"
+    ),
+    "Accept-Language": "en-US,en;q=0.9",
+}
 
+# ─────────────────────────────────────────
+# DB
+# ─────────────────────────────────────────
 
 def get_db():
     return create_client(SUPABASE_URL, SUPABASE_KEY)
 
 
-def scrape_page(page: int) -> list[dict]:
+# ─────────────────────────────────────────
+# FASE 1 — LISTING SCRAPE
+# ─────────────────────────────────────────
+
+def scrape_listing_page(page: int) -> list[dict]:
+    """Coleta cards de grupo da listagem paginada do erogram."""
     url = f"{BASE_URL}/groups/page/{page}" if page > 1 else f"{BASE_URL}/groups"
     try:
         r = requests.get(url, headers=HEADERS, timeout=20)
@@ -33,7 +62,7 @@ def scrape_page(page: int) -> list[dict]:
         print(f"  Página {page} retornou {r.status_code}")
         return []
 
-    soup  = BeautifulSoup(r.text, "html.parser")
+    soup   = BeautifulSoup(r.text, "html.parser")
     groups = []
     seen   = set()
 
@@ -44,7 +73,8 @@ def scrape_page(page: int) -> list[dict]:
         if any(href.startswith(p) for p in [
             "/groups", "/bots", "/articles", "/ainsfw", "/onlyfans",
             "/add", "/login", "/best", "/premium", "/advertise",
-            "/contact", "/de/", "/es/", "/page", "/premiumvault"
+            "/contact", "/de/", "/es/", "/page", "/premiumvault",
+            "/ofsearch",
         ]):
             continue
 
@@ -57,47 +87,45 @@ def scrape_page(page: int) -> list[dict]:
         name    = name_el.get_text(strip=True) if name_el else slug.replace("-", " ").title()
         if not name or len(name) < 2:
             name = slug.replace("-", " ").title()
-        # Limpa aspas para não quebrar o SQL
         name = name.replace("'", "''")
 
         img   = card.select_one("img")
         thumb = img.get("src", "") if img else ""
         if thumb.startswith("/_next/image"):
-            match = re.search(r"url=([^&]+)", thumb)
-            if match:
-                from urllib.parse import unquote
-                thumb = unquote(match.group(1))
+            m = re.search(r"url=([^&]+)", thumb)
+            if m:
+                thumb = unquote(m.group(1))
         thumb = thumb.replace("'", "''") if thumb else ""
 
         cat_el   = card.select_one("span")
         cat_text = cat_el.get_text(strip=True).lower() if cat_el else ""
-        category = map_category(cat_text)
+        category = _map_category(cat_text)
 
         members = 0
         for el in card.select("span, p"):
             t = el.get_text(strip=True).replace(",", "").replace(".", "")
             if "K" in t:
                 try:
-                    members = int(float(t.replace("K", "")) * 1000)
+                    members = int(float(t.replace("K", "")) * 1_000)
                     break
-                except:
+                except ValueError:
                     pass
             elif t.isdigit() and int(t) > 100:
                 members = int(t)
                 break
 
         groups.append({
-            "slug":         slug,
-            "name":         name,
-            "thumb":        thumb,
-            "category":     category,
-            "members":      members,
+            "slug":     slug,
+            "name":     name,
+            "thumb":    thumb,
+            "category": category,
+            "members":  members,
         })
 
     return groups
 
 
-def map_category(text: str) -> str:
+def _map_category(text: str) -> str:
     mapping = [
         ("milf",      "milf"),
         ("amateur",   "amateur"),
@@ -132,7 +160,7 @@ def map_category(text: str) -> str:
 
 
 def insert_batch(groups: list[dict]) -> int:
-    """Insere todos os grupos da página em um único upsert."""
+    """Upsert em batch; fallback individual se falhar."""
     if not groups:
         return 0
 
@@ -157,13 +185,11 @@ def insert_batch(groups: list[dict]) -> int:
         res = db.table("groups").upsert(
             records,
             on_conflict="slug",
-            ignore_duplicates=True
+            ignore_duplicates=True,
         ).execute()
-        inserted = len(res.data) if res.data else 0
-        return inserted
+        return len(res.data) if res.data else 0
     except Exception as e:
         print(f"  ❌ Erro no batch insert: {e}")
-        # Fallback: tenta um a um com delay maior
         inserted = 0
         for rec in records:
             time.sleep(1.0)
@@ -174,41 +200,217 @@ def insert_batch(groups: list[dict]) -> int:
                     continue
                 db2.table("groups").insert(rec).execute()
                 inserted += 1
-                print(f"  ✅ {rec['slug']}")
+                print(f"    ✅ {rec['slug']}")
             except Exception as e2:
-                print(f"  ❌ {rec['slug']}: {e2}")
+                print(f"    ❌ {rec['slug']}: {e2}")
         return inserted
 
 
+# ─────────────────────────────────────────
+# FASE 2 — DETAIL SCRAPE (telegram_url + description)
+# ─────────────────────────────────────────
+
+def scrape_group_page(slug: str) -> dict:
+    """
+    Visita https://erogram.pro/{slug} e extrai:
+      - telegram_url : href do botão que contém t.me/
+      - description  : texto descritivo do grupo
+    """
+    url    = f"{BASE_URL}/{slug}"
+    result = {"telegram_url": None, "description": None}
+
+    try:
+        r = requests.get(url, headers=HEADERS, timeout=20)
+    except Exception as e:
+        print(f"    Erro HTTP {slug}: {e}")
+        return result
+
+    if r.status_code != 200:
+        print(f"    {slug}: HTTP {r.status_code}")
+        return result
+
+    soup = BeautifulSoup(r.text, "html.parser")
+
+    # ── telegram_url ──────────────────────
+    # Prioridade: âncora explícita com t.me/
+    for a in soup.find_all("a", href=True):
+        href = a["href"]
+        if "t.me/" in href and href.startswith("https://t.me/"):
+            result["telegram_url"] = href
+            break
+
+    # Fallback: botão com classe join/cta
+    if not result["telegram_url"]:
+        for sel in [
+            'a[href*="t.me/"]',
+            'a[class*="join" i]',
+            'a[class*="Join"]',
+            'a[class*="btn" i][href*="t.me"]',
+        ]:
+            el = soup.select_one(sel)
+            if el and "t.me/" in el.get("href", ""):
+                result["telegram_url"] = el["href"]
+                break
+
+    # ── description ───────────────────────
+    # Tentativas em ordem de especificidade
+    desc_selectors = [
+        'meta[name="description"]',         # meta tag
+        ".group-description",
+        ".description",
+        'p[class*="desc" i]',
+        'div[class*="desc" i] > p',
+        "article p",
+        "section p",
+        ".content p",
+        "main p",
+    ]
+    for sel in desc_selectors:
+        el = soup.select_one(sel)
+        if not el:
+            continue
+        if el.name == "meta":
+            text = el.get("content", "").strip()
+        else:
+            text = el.get_text(strip=True)
+
+        # Ignora textos muito curtos ou de navegação
+        if len(text) < 30:
+            continue
+        # Descarta se começar com copyright / marcas do site
+        low = text.lower()
+        if any(kw in low[:40] for kw in ["erogram", "copyright", "©", "cookie", "privacy"]):
+            continue
+
+        result["description"] = text[:600]
+        break
+
+    return result
+
+
+def enrich_groups(limit: int = 200) -> int:
+    """
+    Busca grupos no banco com telegram_url IS NULL (source = 'erogram')
+    e visita a página individual para preenchê-los.
+    """
+    db = get_db()
+
+    print(f"\n{'─'*50}")
+    print(f"  Fase 2 — Enriquecimento (telegram_url IS NULL)")
+    print(f"{'─'*50}")
+
+    try:
+        res = (
+            db.table("groups")
+            .select("id, slug")
+            .is_("telegram_url", "null")
+            .eq("source", "erogram")
+            .limit(limit)
+            .execute()
+        )
+        rows = res.data or []
+    except Exception as e:
+        print(f"  ❌ Erro ao buscar grupos: {e}")
+        return 0
+
+    if not rows:
+        print("  ✓ Nenhum grupo com telegram_url NULL — nada a fazer.")
+        return 0
+
+    print(f"  Encontrados {len(rows)} grupos para enriquecer.\n")
+    updated = 0
+    errors  = 0
+
+    for i, row in enumerate(rows, 1):
+        slug = row["slug"]
+        print(f"  [{i}/{len(rows)}] {slug}", end=" → ", flush=True)
+
+        time.sleep(1.5)  # delay obrigatório entre requisições
+
+        detail = scrape_group_page(slug)
+
+        if not detail["telegram_url"] and not detail["description"]:
+            print("⚠️  sem dados")
+            errors += 1
+            continue
+
+        update_payload: dict = {}
+        if detail["telegram_url"]:
+            update_payload["telegram_url"] = detail["telegram_url"]
+        if detail["description"]:
+            # Limpa aspas simples para segurança no banco
+            update_payload["description"] = detail["description"].replace("'", "\\'")
+
+        try:
+            db2 = get_db()
+            db2.table("groups").update(update_payload).eq("slug", slug).execute()
+            updated += 1
+            tg_short = (detail["telegram_url"] or "—")[:55]
+            print(f"✅ {tg_short}")
+        except Exception as e:
+            print(f"❌ DB error: {e}")
+            errors += 1
+
+    print(f"\n  Enriquecimento concluído — ✅ {updated} atualizados | ❌ {errors} erros")
+    return updated
+
+
+# ─────────────────────────────────────────
+# MAIN
+# ─────────────────────────────────────────
+
 def main():
-    total = 0
-    TARGET = 250
+    parser = argparse.ArgumentParser(description="Erogram scraper v4")
+    parser.add_argument(
+        "--enrich-only", action="store_true",
+        help="Pula o scrape de listagem e executa apenas o enriquecimento (fase 2)",
+    )
+    parser.add_argument(
+        "--target", type=int, default=250,
+        help="Número alvo de grupos para coletar na listagem (padrão: 250)",
+    )
+    parser.add_argument(
+        "--enrich-limit", type=int, default=200,
+        help="Máximo de grupos a enriquecer na fase 2 (padrão: 200)",
+    )
+    args = parser.parse_args()
 
-    print(f"\n{'='*50}")
-    print(f"  Erogram Scraper v3 — alvo: {TARGET} grupos")
-    print(f"{'='*50}\n")
+    print(f"\n{'='*54}")
+    print(f"  Erogram Scraper v4")
+    print(f"{'='*54}")
 
-    for page in range(1, 20):
-        if total >= TARGET:
-            break
+    # ── FASE 1: listing ───────────────────
+    if not args.enrich_only:
+        print(f"\n  Fase 1 — Listagem (alvo: {args.target} grupos)")
+        print(f"{'─'*54}")
 
-        print(f"\n📄 Página {page}...")
-        groups = scrape_page(page)
+        total = 0
+        for page in range(1, 30):
+            if total >= args.target:
+                break
 
-        if not groups:
-            print(f"  Página {page} vazia — parando.")
-            break
+            print(f"\n📄 Página {page}...")
+            groups = scrape_listing_page(page)
 
-        print(f"  {len(groups)} grupos coletados, inserindo em batch...")
-        inserted = insert_batch(groups)
-        total   += inserted
-        print(f"  ✅ Inseridos: {inserted} | Total acumulado: {total}")
+            if not groups:
+                print(f"  Página {page} vazia — parando listagem.")
+                break
 
-        time.sleep(3)
+            print(f"  {len(groups)} grupos, inserindo em batch...")
+            inserted = insert_batch(groups)
+            total   += inserted
+            print(f"  ✅ Novos: {inserted} | Acumulado: {total}")
 
-    print(f"\n{'='*50}")
-    print(f"  CONCLUÍDO — {total} grupos inseridos no banco")
-    print(f"{'='*50}\n")
+            time.sleep(3)
+
+        print(f"\n  Fase 1 concluída — {total} grupos inseridos/atualizados")
+
+    # ── FASE 2: enriquecimento ────────────
+    enrich_groups(limit=args.enrich_limit)
+
+    print(f"\n{'='*54}")
+    print(f"  CONCLUÍDO")
+    print(f"{'='*54}\n")
 
 
 if __name__ == "__main__":
