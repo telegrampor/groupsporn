@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Geist } from 'next/font/google'
 import './globals.css'
 import { NavBar } from '@/components/layout/NavBar'
 import { AgeGate } from '@/components/AgeGate'
@@ -7,7 +7,12 @@ import { CookieConsent } from '@/components/CookieConsent'
 import Image from 'next/image'
 import Link from 'next/link'
 
-const inter = Inter({ subsets: ['latin'], display: 'swap' })
+const geist = Geist({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-geist',
+  weight: ['400', '500', '600', '700', '800', '900'],
+})
 
 const SITE_URL  = process.env.NEXT_PUBLIC_SITE_URL  || 'https://example.com'
 const SITE_NAME = process.env.NEXT_PUBLIC_SITE_NAME || 'GroupsPorn'
@@ -25,7 +30,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={inter.className}>
+    <html lang="en" className={geist.variable}>
       <body>
         <AgeGate />
         <NavBar />

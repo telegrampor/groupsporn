@@ -1,21 +1,67 @@
 @import "tailwindcss";
 
+/* ════════════════════════════════════════════════════
+   TAILWIND v4 — @theme (branding from erogram.pro)
+   Font:    Geist (primary + heading)
+   Scheme:  Dark — background #111111
+   Accent:  #e8356d (pink/red CTA) · #0ea5e9 (cyan/link)
+   Radius:  8px base · Spacing: 8px base
+   h1: 60px · h2: 48px  (Firecrawl branding extract)
+════════════════════════════════════════════════════ */
+@theme {
+  /* ── Font ── */
+  --font-sans:    var(--font-geist, "Geist", "Arial", "Helvetica", sans-serif);
+  --font-heading: var(--font-geist, "Geist", "Arial", "Helvetica", sans-serif);
+
+  /* ── Brand colors ── */
+  --color-bg:           #0d0d0f;   /* background #111111 from branding */
+  --color-surface:      #141417;
+  --color-card:         #1a1a1f;
+  --color-border:       #2a2a32;
+  --color-accent:       #e8356d;   /* primary CTA (pink/red) */
+  --color-accent-hover: #c42d5e;
+  --color-cyan:         #0ea5e9;   /* link/accent #0088CC from branding */
+  --color-gold:         #f59e0b;
+  --color-green:        #22c55e;
+  --color-text:         #f0f0f5;
+  --color-muted:        #9898aa;
+  --color-faint:        #5a5a6e;
+
+  /* ── Border radius (branding: 8px base) ── */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+
+  /* ── Font sizes (branding: h1 60px · h2 48px) ── */
+  --text-display:              3.75rem;   /* 60px — h1 from branding */
+  --text-display--line-height: 1.1;
+  --text-h2:                   3rem;      /* 48px — h2 from branding */
+  --text-h2--line-height:      1.2;
+  --text-hero:                 3.5rem;    /* 56px — current hero h1 */
+  --text-hero--line-height:    1.1;
+  --text-section:              2.5rem;    /* 40px — section titles */
+
+  /* ── Spacing base: 8px ── */
+  --spacing: 0.5rem;
+}
+
+/* ── CSS vars (used in inline styles throughout the project) ── */
 :root {
-  --bg-primary:    #0d0d0f;
-  --bg-secondary:  #141417;
-  --bg-card:       #1a1a1f;
-  --border:        #2a2a32;
-  --accent:        #e8356d;
-  --accent-hover:  #c42d5e;
-  --accent-cyan:   #0ea5e9;
-  --accent-gold:   #f59e0b;
-  --text-primary:  #f0f0f5;
-  --text-secondary:#9898aa;
-  --text-muted:    #5a5a6e;
-  --badge-new:     #22c55e;
-  --radius-sm:     6px;
-  --radius-md:     10px;
-  --radius-lg:     16px;
+  --bg-primary:     var(--color-bg);
+  --bg-secondary:   var(--color-surface);
+  --bg-card:        var(--color-card);
+  --border:         var(--color-border);
+  --accent:         var(--color-accent);
+  --accent-hover:   var(--color-accent-hover);
+  --accent-cyan:    var(--color-cyan);
+  --accent-gold:    var(--color-gold);
+  --text-primary:   var(--color-text);
+  --text-secondary: var(--color-muted);
+  --text-muted:     var(--color-faint);
+  --badge-new:      var(--color-green);
+  --radius-sm:      6px;
+  --radius-md:      10px;
+  --radius-lg:      16px;
 }
 
 * { box-sizing: border-box; }
@@ -25,7 +71,7 @@ html { scroll-behavior: smooth; }
 body {
   background: var(--bg-primary);
   color: var(--text-primary);
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }
 
