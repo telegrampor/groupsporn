@@ -10,29 +10,28 @@ export const metadata: Metadata = {
   description: 'Browse and discover thousands of porn and NSFW Telegram groups by category.',
 }
 
-// slug matches DB category_slug exactly; label is display name
 const CATEGORIES = [
-  { slug: 'amateur',      label: 'Amateur'      },
-  { slug: 'anal',         label: 'Anal'         },
-  { slug: 'anime',        label: 'Anime'        },
-  { slug: 'asian',        label: 'Asian'        },
-  { slug: 'bdsm',         label: 'BDSM'         },
-  { slug: 'big-ass',      label: 'Big Ass'      },
-  { slug: 'big-tits',     label: 'Big Tits'     },
-  { slug: 'blowjob',      label: 'Blowjob'      },
-  { slug: 'cosplay',      label: 'Cosplay'      },
-  { slug: 'creampie',     label: 'Creampie'     },
-  { slug: 'cuckold',      label: 'Cuckold'      },
-  { slug: 'ebony',        label: 'Ebony'        },
-  { slug: 'feet',         label: 'Feet'         },
-  { slug: 'fetish',       label: 'Fetish'       },
-  { slug: 'latina',       label: 'Latina'       },
-  { slug: 'lesbian',      label: 'Lesbian'      },
-  { slug: 'milf',         label: 'MILF'         },
-  { slug: 'nsfw-telegram',label: 'NSFW Telegram'},
-  { slug: 'onlyfans',     label: 'OnlyFans'     },
-  { slug: 'threesome',    label: 'Threesome'    },
-  { slug: 'usa',          label: 'USA'          },
+  { slug: 'amateur',       label: 'Amateur'       },
+  { slug: 'anal',          label: 'Anal'          },
+  { slug: 'anime',         label: 'Anime'         },
+  { slug: 'asian',         label: 'Asian'         },
+  { slug: 'bdsm',          label: 'BDSM'          },
+  { slug: 'big-ass',       label: 'Big Ass'       },
+  { slug: 'big-tits',      label: 'Big Tits'      },
+  { slug: 'blowjob',       label: 'Blowjob'       },
+  { slug: 'cosplay',       label: 'Cosplay'       },
+  { slug: 'creampie',      label: 'Creampie'      },
+  { slug: 'cuckold',       label: 'Cuckold'       },
+  { slug: 'ebony',         label: 'Ebony'         },
+  { slug: 'feet',          label: 'Feet'          },
+  { slug: 'fetish',        label: 'Fetish'        },
+  { slug: 'latina',        label: 'Latina'        },
+  { slug: 'lesbian',       label: 'Lesbian'       },
+  { slug: 'milf',          label: 'MILF'          },
+  { slug: 'nsfw-telegram', label: 'NSFW Telegram' },
+  { slug: 'onlyfans',      label: 'OnlyFans'      },
+  { slug: 'threesome',     label: 'Threesome'     },
+  { slug: 'usa',           label: 'USA'           },
 ]
 
 export default async function GroupsPage({
@@ -41,34 +40,35 @@ export default async function GroupsPage({
   searchParams: Promise<{ category?: string; search?: string; sort?: string; page?: string }>
 }) {
   const params = await searchParams
-  const page = Number(params.page ?? 1)
+  const page   = Number(params.page ?? 1)
 
   const { groups, total, totalPages } = await getGroups({
     category:   params.category,
     search:     params.search,
     sort:       (params.sort as 'newest' | 'popular' | 'members') ?? 'newest',
     page,
-    entityType: ['group', 'channel'],  // Bug fix: exclude bots from groups page
+    entityType: ['group', 'channel'],
   })
 
   return (
-    <main style={{ padding: '32px 24px', maxWidth: 1200, margin: '0 auto' }}>
-      <h1 style={{ fontSize: 32, fontWeight: 900, color: '#f5f5f5', marginBottom: 6 }}>
-        NSFW Telegram <span style={{ color: '#b31b1b' }}>Groups</span>
+    <main className="px-3 sm:px-6 py-8 max-w-7xl mx-auto">
+      <h1 className="text-3xl md:text-4xl font-black text-[#f5f5f5] mb-2">
+        NSFW Telegram <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">Groups</span>
       </h1>
-      <p style={{ color: '#999', fontSize: 14, marginBottom: 28 }}>
+      <p className="text-[#999] text-sm mb-6">
         {total > 0 ? `${fmt(total)} communities` : 'Browse all communities'}
       </p>
 
       <GroupsFilters categories={CATEGORIES} />
 
       {groups.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '80px 0', color: '#999' }}>
-          <p style={{ fontSize: 32, marginBottom: 12 }}>🔍</p>
-          <p style={{ fontSize: 16 }}>No groups found. Try adjusting your filters.</p>
+        <div className="text-center py-20 text-[#999]">
+          <p className="text-4xl mb-4">🔍</p>
+          <p className="text-base">No groups found. Try adjusting your filters.</p>
         </div>
       ) : (
-        <div className="fresh-grid" style={{ marginTop: 24 }}>
+        /* Original grid: grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 */
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 mt-6">
           {groups.map(g => (
             <GroupCard
               key={g.id}
@@ -77,14 +77,17 @@ export default async function GroupsPage({
               category={cap(g.category_slug)}
               image={g.thumbnail_url}
               count={g.member_count}
+              viewCount={g.view_count}
               isNew={g.is_new}
+              isFeatured={g.is_featured}
+              ctaLabel="🚀 Join"
             />
           ))}
         </div>
       )}
 
       {totalPages > 1 && (
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: 48 }}>
+        <div className="flex justify-center gap-2 mt-12">
           {page > 1 && (
             <PaginationLink href={buildHref(params, page - 1)}>← Prev</PaginationLink>
           )}
@@ -119,14 +122,11 @@ function PaginationLink({ href, children, active }: {
   href: string; children: React.ReactNode; active?: boolean
 }) {
   return (
-    <Link href={href} style={{
-      padding: '8px 14px', borderRadius: 8,
-      background: active ? '#b31b1b' : '#1a1a1a',
-      border: `1px solid ${active ? '#b31b1b' : 'rgba(255,255,255,0.08)'}`,
-      color: active ? '#fff' : '#999',
-      fontSize: 14, fontWeight: active ? 700 : 400,
-      textDecoration: 'none',
-    }}>
+    <Link href={href} className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${
+      active
+        ? 'bg-blue-600 text-white border border-blue-600'
+        : 'bg-[#1a1a1a] text-[#999] border border-white/10 hover:border-white/20'
+    }`}>
       {children}
     </Link>
   )

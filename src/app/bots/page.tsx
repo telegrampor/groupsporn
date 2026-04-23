@@ -9,32 +9,34 @@ export const metadata: Metadata = {
 }
 
 export default async function BotsPage() {
-  // entity_type='bot' filtered in DB — no JS-side filtering
   const { groups: bots, total } = await getGroups({
     entityType: 'bot',
     sort: 'popular',
   })
 
   return (
-    <main style={{ padding: '32px 24px', maxWidth: 1200, margin: '0 auto' }}>
-      <div style={{ textAlign: 'center', marginBottom: 40 }}>
-        <h1 style={{ fontSize: 36, fontWeight: 900, color: '#f5f5f5', marginBottom: 8 }}>
-          NSFW Telegram <span style={{ color: '#b31b1b' }}>Bots</span>
+    <main className="px-3 sm:px-6 py-8 max-w-7xl mx-auto">
+
+      {/* Header — matches erogram.pro /bots h1 exactly */}
+      <div className="mb-8">
+        <h1 className="text-3xl md:text-4xl font-black text-[#f5f5f5] mb-4">
+          Discover NSFW Telegram <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">Bots</span>
         </h1>
-        <p style={{ color: '#999', fontSize: 14 }}>
+        <p className="text-[#999] text-lg">
           {total > 0
             ? `${total} AI companions, chatbots, and interactive adult tools`
-            : 'AI companions, NSFW chatbots, and interactive adult tools'}
+            : 'Discover amazing bots'}
         </p>
       </div>
 
       {bots.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '80px 0', color: '#999' }}>
-          <p style={{ fontSize: 40, marginBottom: 12 }}>🤖</p>
-          <p style={{ fontSize: 16 }}>No bots found — check your Supabase connection and seed data.</p>
+        <div className="text-center py-20 text-[#999]">
+          <p className="text-4xl mb-4">🤖</p>
+          <p className="text-base">No bots found — check your Supabase connection and seed data.</p>
         </div>
       ) : (
-        <div className="fresh-grid">
+        /* Original grid: grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 */
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 relative z-10">
           {bots.map(bot => (
             <GroupCard
               key={bot.id}
@@ -43,7 +45,10 @@ export default async function BotsPage() {
               category={cap(bot.category_slug || 'bot')}
               image={bot.thumbnail_url}
               count={bot.member_count}
+              viewCount={bot.view_count}
               isNew={bot.is_new}
+              isFeatured={bot.is_featured}
+              ctaLabel="🤖 Use Bot"
             />
           ))}
         </div>
