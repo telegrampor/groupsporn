@@ -4,6 +4,7 @@ import Image            from 'next/image'
 import Link             from 'next/link'
 import { getGroupBySlug, getSimilarGroups, getAllPublishedSlugs } from '@/lib/supabase/queries/groups'
 import { buildGroupMeta, webPageSchema, faqSchema, fmt, cap } from '@/lib/utils/seo'
+import { GroupCard }    from '@/components/GroupCard'
 
 export async function generateStaticParams() {
   const slugs = await getAllPublishedSlugs()
@@ -162,10 +163,11 @@ export default async function GroupDetailPage(
               rel="nofollow noopener noreferrer"
               style={{
                 display: 'inline-flex', alignItems: 'center', gap: 8,
-                background: 'var(--accent)', color: '#fff',
-                padding: '14px 36px', borderRadius: 'var(--radius-md)',
+                background: '#b31b1b', color: '#fff',
+                padding: '14px 36px', borderRadius: '12px',
                 fontWeight: 700, fontSize: 16, textDecoration: 'none',
-                boxShadow: '0 0 30px rgba(232,53,109,0.3)',
+                boxShadow: '0 0 30px rgba(179,27,27,0.35)',
+                transition: 'opacity 0.15s',
               }}>
               🚀 Join {type} Now
             </a>
@@ -178,41 +180,16 @@ export default async function GroupDetailPage(
                 marginBottom: 14, color: 'var(--text-primary)' }}>
                 Similar Communities
               </h2>
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))',
-                gap: 10,
-              }}>
+              <div className="fresh-grid">
                 {similar.map(s => (
-                  <Link key={s.id} href={`/${s.slug}`} style={{
-                    display: 'flex', alignItems: 'center', gap: 10,
-                    padding: 12, borderRadius: 'var(--radius-md)',
-                    background: 'var(--bg-card)', border: '1px solid var(--border)',
-                    textDecoration: 'none',
-                  }}>
-                    <div style={{
-                      position: 'relative', width: 36, height: 36,
-                      borderRadius: '50%', overflow: 'hidden', flexShrink: 0,
-                      background: 'var(--bg-secondary)',
-                    }}>
-                      {s.thumbnail_url && (
-                        <Image src={s.thumbnail_url} alt={s.name}
-                          fill sizes="36px" style={{ objectFit: 'cover' }}
-                          loading="lazy" />
-                      )}
-                    </div>
-                    <div style={{ minWidth: 0 }}>
-                      <p style={{
-                        fontSize: 12, fontWeight: 600, color: 'var(--text-primary)',
-                        overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                      }}>{s.name}</p>
-                      {s.member_count > 0 && (
-                        <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>
-                          {fmt(s.member_count)}
-                        </p>
-                      )}
-                    </div>
-                  </Link>
+                  <GroupCard
+                    key={s.id}
+                    href={`/${s.slug}`}
+                    title={s.name}
+                    category={cap(s.category_slug)}
+                    image={s.thumbnail_url}
+                    count={s.member_count}
+                  />
                 ))}
               </div>
             </section>
