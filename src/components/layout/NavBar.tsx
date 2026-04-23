@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import type { ReactNode } from 'react'
 import Link from 'next/link'
-import { Send, Lock, Sparkles, Search, Plus, LogIn, Menu, X } from 'lucide-react'
+import { Send, Lock, Sparkles, Search, Plus, LogIn, Menu, X, FileText } from 'lucide-react'
 import Image from 'next/image'
 
 export function NavBar() {
@@ -21,7 +21,7 @@ export function NavBar() {
       }}>
         {/* Logo */}
         <Link href="/" style={{ marginRight: 12, flexShrink: 0, lineHeight: 0 }}>
-          <Image src="/logo.png" alt="GroupsPorn" width={180} height={40} className="logo" style={{ objectFit: 'contain' }} />
+          <Image src="/logo.png" alt="GroupsPorn" width={120} height={28} className="logo" style={{ objectFit: 'contain' }} />
         </Link>
 
         {/* Desktop nav links */}
@@ -82,30 +82,96 @@ export function NavBar() {
       {/* Mobile dropdown */}
       {open && (
         <nav style={{
-          background: '#141417', borderTop: '1px solid #2a2a32',
-          padding: '12px 16px',
-          display: 'flex', flexDirection: 'column', gap: 2,
+          background: '#0d0d0f', borderTop: '1px solid #2a2a32',
+          padding: '12px 16px 20px',
+          display: 'flex', flexDirection: 'column', gap: 8,
         }}>
-          {([
-            ['/groups',   'Groups'],
-            ['/bots',     'Bots'],
-            ['/ainsfw',   '🔞 AI NSFW'],
-            ['/ofsearch', 'OFsearch'],
-            ['/articles', 'Articles'],
-            ['/add',      '+ Add Group'],
-            ['/login',    'Login'],
-          ] as [string, string][]).map(([href, label]) => (
-            <Link key={href} href={href} onClick={() => setOpen(false)} style={{
-              color: '#f0f0f5', textDecoration: 'none',
-              padding: '10px 14px', borderRadius: 8,
-              fontSize: 15, fontWeight: 500,
+          {/* Groups */}
+          <MobileLink href="/groups" onClick={() => setOpen(false)}
+            icon={<Send size={18} color="#0ea5e9" />}>
+            Groups
+          </MobileLink>
+
+          {/* Bots */}
+          <MobileLink href="/bots" onClick={() => setOpen(false)}
+            icon={<Lock size={18} color="#0ea5e9" />}>
+            Bots
+          </MobileLink>
+
+          {/* AI NSFW */}
+          <MobileLink href="/ainsfw" onClick={() => setOpen(false)}
+            icon={<span style={{ fontSize: 18, lineHeight: 1 }}>🔞</span>}>
+            AI NSFW
+          </MobileLink>
+
+          {/* OFsearch — pill branca */}
+          <Link href="/ofsearch" onClick={() => setOpen(false)} style={{
+            display: 'flex', alignItems: 'center', gap: 12,
+            padding: '14px 16px', borderRadius: 8,
+            background: '#141417', border: '1px solid #2a2a32',
+            textDecoration: 'none', fontSize: 16, fontWeight: 500,
+          }}>
+            <span style={{
+              display: 'inline-flex', alignItems: 'center', gap: 5,
+              background: '#fff', color: '#0ea5e9',
+              padding: '3px 10px', borderRadius: 999,
+              fontSize: 13, fontWeight: 700,
             }}>
-              {label}
-            </Link>
-          ))}
+              <Search size={12} /> OFsearch
+            </span>
+          </Link>
+
+          {/* Articles */}
+          <MobileLink href="/articles" onClick={() => setOpen(false)}
+            icon={<FileText size={18} color="#9898aa" />}>
+            Articles
+          </MobileLink>
+
+          {/* Divider */}
+          <div style={{ height: 1, background: '#2a2a32', margin: '4px 0' }} />
+
+          {/* Add */}
+          <Link href="/add" onClick={() => setOpen(false)} style={{
+            display: 'flex', alignItems: 'center', gap: 12,
+            padding: '14px 16px', borderRadius: 8,
+            background: '#e8356d', border: 'none',
+            textDecoration: 'none', fontSize: 16, fontWeight: 700, color: '#fff',
+          }}>
+            <Plus size={18} /> Add Group
+          </Link>
+
+          {/* Login */}
+          <Link href="/login" onClick={() => setOpen(false)} style={{
+            display: 'flex', alignItems: 'center', gap: 12,
+            padding: '14px 16px', borderRadius: 8,
+            background: '#141417', border: '1px solid #2a2a32',
+            textDecoration: 'none', fontSize: 16, fontWeight: 500, color: '#0ea5e9',
+          }}>
+            <LogIn size={18} color="#0ea5e9" /> Login
+          </Link>
         </nav>
       )}
     </header>
+  )
+}
+
+function MobileLink({
+  href, children, icon, onClick,
+}: {
+  href: string
+  children: ReactNode
+  icon: ReactNode
+  onClick: () => void
+}) {
+  return (
+    <Link href={href} onClick={onClick} style={{
+      display: 'flex', alignItems: 'center', gap: 12,
+      padding: '14px 16px', borderRadius: 8,
+      background: '#141417', border: '1px solid #2a2a32',
+      textDecoration: 'none', fontSize: 16, fontWeight: 500, color: '#f0f0f5',
+    }}>
+      {icon} {children}
+    </Link>
   )
 }
 

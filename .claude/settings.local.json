@@ -12,7 +12,9 @@
       "Bash(npm run *)",
       "Bash(python -m py_compile scripts/scraper/erogram_scraper.py)",
       "Bash(py -m py_compile scripts/scraper/erogram_scraper.py)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)"
     ]
   }
 }
