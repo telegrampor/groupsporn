@@ -3,7 +3,12 @@
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback } from 'react'
 
-export function GroupsFilters({ categories }: { categories: string[] }) {
+interface Category {
+  slug:  string   // lowercase-dashed, matches DB category_slug exactly
+  label: string   // display name
+}
+
+export function GroupsFilters({ categories }: { categories: Category[] }) {
   const router = useRouter()
   const params = useSearchParams()
 
@@ -17,7 +22,7 @@ export function GroupsFilters({ categories }: { categories: string[] }) {
 
   return (
     <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 4 }}>
-      {/* Category */}
+      {/* Category — value is the DB slug, label is the display name */}
       <select
         value={params.get('category') ?? ''}
         onChange={e => update('category', e.target.value)}
@@ -25,7 +30,7 @@ export function GroupsFilters({ categories }: { categories: string[] }) {
       >
         <option value="">All Categories</option>
         {categories.map(c => (
-          <option key={c} value={c.toLowerCase()}>{c}</option>
+          <option key={c.slug} value={c.slug}>{c.label}</option>
         ))}
       </select>
 
@@ -40,25 +45,22 @@ export function GroupsFilters({ categories }: { categories: string[] }) {
         <option value="members">Most Members</option>
       </select>
 
-      {/* Search */}
+      {/* Search — fires on Enter */}
       <input
         type="search"
         placeholder="Search groups…"
         defaultValue={params.get('search') ?? ''}
         onKeyDown={e => {
-          if (e.key === 'Enter') update('search', (e.target as HTMLInputElement).value)
+          if (e.key === 'Enter') update('search', (e.target as HTMLInputElement).value.trim())
         }}
-        style={{
-          ...selectStyle,
-          minWidth: 180,
-        }}
+        style={{ ...selectStyle, minWidth: 180 }}
       />
     </div>
   )
 }
 
 const selectStyle: React.CSSProperties = {
-  background: '#141417', border: '1px solid #2a2a32',
-  color: '#f0f0f5', padding: '8px 14px', borderRadius: 8,
+  background: '#1a1a1a', border: '1px solid rgba(255,255,255,0.08)',
+  color: '#f5f5f5', padding: '8px 14px', borderRadius: 8,
   fontSize: 13, outline: 'none', cursor: 'pointer',
 }

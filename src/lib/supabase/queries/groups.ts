@@ -13,11 +13,12 @@ function isConfigured() {
 }
 
 export interface GroupFilters {
-  category?: string
-  country?: string
-  search?: string
-  sort?: 'newest' | 'popular' | 'members'
-  page?: number
+  category?:   string
+  country?:    string
+  search?:     string
+  sort?:       'newest' | 'popular' | 'members'
+  page?:       number
+  entityType?: string | string[]   // 'group' | 'channel' | 'bot' | array
 }
 
 export async function getGroups(filters: GroupFilters = {}) {
@@ -27,7 +28,7 @@ export async function getGroups(filters: GroupFilters = {}) {
   }
 
   const supabase = await createClient()
-  const { category, country, search } = filters
+  const { category, country, search, entityType } = filters
   const offset = (page - 1) * PAGE_SIZE
 
   let query = supabase
@@ -37,12 +38,25 @@ export async function getGroups(filters: GroupFilters = {}) {
     .eq('hidden', false)
     .eq('status', 'active')
 
-  if (category) query = query.eq('category_slug', category)
-  if (country)  query = query.ilike('country', country)
-  if (search)   query = query.textSearch('name', search, { type: 'websearch' })
+  // Bug fix: filter entity_type in DB, not JS
+  if (entityType) {
+    if (Array.isArray(entityType)) {
+      query = query.in('entity_type', entityType)
+    } else {
+      query = query.eq('entity_type', entityType)
+    }
+  }
+
+  // Bug fix: category slugs are lowercase-dashed in DB → pass them that way
+  if (category) query = query.eq('category_slug', category.toLowerCase())
+
+  if (country) query = query.ilike('country', country)
+
+  // Bug fix: use ilike instead of textSearch (no FTS index required)
+  if (search) query = query.ilike('name', `%${search.trim()}%`)
 
   switch (sort) {
-    case 'popular': query = query.order('click_count', { ascending: false }); break
+    case 'popular': query = query.order('click_count',  { ascending: false }); break
     case 'members': query = query.order('member_count', { ascending: false }); break
     default:        query = query.order('published_at', { ascending: false })
   }

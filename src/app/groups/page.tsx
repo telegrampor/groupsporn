@@ -10,10 +10,29 @@ export const metadata: Metadata = {
   description: 'Browse and discover thousands of porn and NSFW Telegram groups by category.',
 }
 
+// slug matches DB category_slug exactly; label is display name
 const CATEGORIES = [
-  'Amateur','Anal','Anime','Asian','BDSM','Big Ass','Big Tits','Blowjob',
-  'Cosplay','Ebony','Feet','Fetish','Latina','Lesbian','MILF','Onlyfans',
-  'Threesome','AI NSFW','Cuckold','Creampie',
+  { slug: 'amateur',      label: 'Amateur'      },
+  { slug: 'anal',         label: 'Anal'         },
+  { slug: 'anime',        label: 'Anime'        },
+  { slug: 'asian',        label: 'Asian'        },
+  { slug: 'bdsm',         label: 'BDSM'         },
+  { slug: 'big-ass',      label: 'Big Ass'      },
+  { slug: 'big-tits',     label: 'Big Tits'     },
+  { slug: 'blowjob',      label: 'Blowjob'      },
+  { slug: 'cosplay',      label: 'Cosplay'      },
+  { slug: 'creampie',     label: 'Creampie'     },
+  { slug: 'cuckold',      label: 'Cuckold'      },
+  { slug: 'ebony',        label: 'Ebony'        },
+  { slug: 'feet',         label: 'Feet'         },
+  { slug: 'fetish',       label: 'Fetish'       },
+  { slug: 'latina',       label: 'Latina'       },
+  { slug: 'lesbian',      label: 'Lesbian'      },
+  { slug: 'milf',         label: 'MILF'         },
+  { slug: 'nsfw-telegram',label: 'NSFW Telegram'},
+  { slug: 'onlyfans',     label: 'OnlyFans'     },
+  { slug: 'threesome',    label: 'Threesome'    },
+  { slug: 'usa',          label: 'USA'          },
 ]
 
 export default async function GroupsPage({
@@ -23,26 +42,28 @@ export default async function GroupsPage({
 }) {
   const params = await searchParams
   const page = Number(params.page ?? 1)
+
   const { groups, total, totalPages } = await getGroups({
-    category: params.category,
-    search: params.search,
-    sort: (params.sort as 'newest' | 'popular' | 'members') ?? 'newest',
+    category:   params.category,
+    search:     params.search,
+    sort:       (params.sort as 'newest' | 'popular' | 'members') ?? 'newest',
     page,
+    entityType: ['group', 'channel'],  // Bug fix: exclude bots from groups page
   })
 
   return (
     <main style={{ padding: '32px 24px', maxWidth: 1200, margin: '0 auto' }}>
-      <h1 style={{ fontSize: 32, fontWeight: 900, color: '#f0f0f5', marginBottom: 6 }}>
-        NSFW Telegram <span style={{ color: '#e8356d' }}>Groups</span>
+      <h1 style={{ fontSize: 32, fontWeight: 900, color: '#f5f5f5', marginBottom: 6 }}>
+        NSFW Telegram <span style={{ color: '#b31b1b' }}>Groups</span>
       </h1>
-      <p style={{ color: '#9898aa', fontSize: 14, marginBottom: 28 }}>
+      <p style={{ color: '#999', fontSize: 14, marginBottom: 28 }}>
         {total > 0 ? `${fmt(total)} communities` : 'Browse all communities'}
       </p>
 
       <GroupsFilters categories={CATEGORIES} />
 
       {groups.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '80px 0', color: '#9898aa' }}>
+        <div style={{ textAlign: 'center', padding: '80px 0', color: '#999' }}>
           <p style={{ fontSize: 32, marginBottom: 12 }}>🔍</p>
           <p style={{ fontSize: 16 }}>No groups found. Try adjusting your filters.</p>
         </div>
@@ -62,7 +83,6 @@ export default async function GroupsPage({
         </div>
       )}
 
-      {/* Pagination */}
       {totalPages > 1 && (
         <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: 48 }}>
           {page > 1 && (
@@ -95,13 +115,15 @@ function buildHref(params: Record<string, string | undefined>, page: number) {
   return `/groups${qs ? `?${qs}` : ''}`
 }
 
-function PaginationLink({ href, children, active }: { href: string; children: React.ReactNode; active?: boolean }) {
+function PaginationLink({ href, children, active }: {
+  href: string; children: React.ReactNode; active?: boolean
+}) {
   return (
     <Link href={href} style={{
       padding: '8px 14px', borderRadius: 8,
-      background: active ? '#e8356d' : '#141417',
-      border: `1px solid ${active ? '#e8356d' : '#2a2a32'}`,
-      color: active ? '#fff' : '#9898aa',
+      background: active ? '#b31b1b' : '#1a1a1a',
+      border: `1px solid ${active ? '#b31b1b' : 'rgba(255,255,255,0.08)'}`,
+      color: active ? '#fff' : '#999',
       fontSize: 14, fontWeight: active ? 700 : 400,
       textDecoration: 'none',
     }}>
