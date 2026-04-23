@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import Image from 'next/image'
 import { getGroups } from '@/lib/supabase/queries/groups'
 import { fmt, cap } from '@/lib/utils/seo'
 import { GroupsFilters } from './GroupsFilters'
+import { GroupCard } from '@/components/GroupCard'
 
 export const metadata: Metadata = {
   title: 'NSFW Telegram Groups — Browse All',
@@ -49,33 +49,15 @@ export default async function GroupsPage({
       ) : (
         <div className="fresh-grid" style={{ marginTop: 24 }}>
           {groups.map(g => (
-            <Link key={g.id} href={`/${g.slug}`} className="card-hover" style={{
-              display: 'block', position: 'relative',
-              aspectRatio: '1 / 1', borderRadius: 12,
-              overflow: 'hidden', background: '#141417',
-              textDecoration: 'none', border: '1px solid #2a2a32',
-            }}>
-              {g.thumbnail_url ? (
-                <Image src={g.thumbnail_url} alt={g.name} fill sizes="(max-width:640px) 50vw, 25vw" style={{ objectFit: 'cover' }} />
-              ) : (
-                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg,#1a1a2e,#2d1b69)' }} />
-              )}
-              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top,rgba(0,0,0,0.85) 0%,transparent 55%)' }} />
-              {g.is_new && (
-                <span style={{ position: 'absolute', top: 8, left: 8, background: '#22c55e', color: '#fff', fontSize: 9, fontWeight: 700, padding: '2px 6px', borderRadius: 3, textTransform: 'uppercase' }}>New</span>
-              )}
-              {g.is_verified && (
-                <span style={{ position: 'absolute', top: 8, right: 8, fontSize: 14 }}>✅</span>
-              )}
-              <div style={{ position: 'absolute', bottom: 10, left: 10, right: 10 }}>
-                <p style={{ fontSize: 13, fontWeight: 600, color: '#fff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginBottom: 2 }}>
-                  {g.name}
-                </p>
-                <p style={{ fontSize: 11, color: '#9898aa' }}>
-                  {cap(g.category_slug)}{g.member_count > 0 && ` · ${fmt(g.member_count)}`}
-                </p>
-              </div>
-            </Link>
+            <GroupCard
+              key={g.id}
+              href={`/${g.slug}`}
+              title={g.name}
+              category={cap(g.category_slug)}
+              image={g.thumbnail_url}
+              count={g.member_count}
+              isNew={g.is_new}
+            />
           ))}
         </div>
       )}

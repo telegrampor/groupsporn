@@ -7,6 +7,7 @@ import type { Metadata } from 'next'
 import type { Article } from '@/types/database'
 import { ChevronRight } from 'lucide-react'
 import { Hero } from '@/components/Hero'
+import { GroupCard } from '@/components/GroupCard'
 
 const SITE_NAME = process.env.NEXT_PUBLIC_SITE_NAME || 'GroupsPorn'
 const YEAR = new Date().getFullYear()
@@ -99,44 +100,15 @@ export default async function HomePage() {
 
           <div className="fresh-grid" style={{ maxWidth: 1200, margin: '0 auto' }}>
             {fresh.map(g => (
-              <Link key={g.id} href={`/${g.slug}`} className="card-hover" style={{
-                display: 'block', position: 'relative',
-                aspectRatio: '1 / 1', borderRadius: 12,
-                overflow: 'hidden', background: '#141417',
-                textDecoration: 'none', border: '1px solid #2a2a32',
-              }}>
-                {g.thumbnail_url && (
-                  <Image
-                    src={g.thumbnail_url} alt={g.name} fill
-                    sizes="(max-width: 640px) 50vw, 25vw"
-                    style={{ objectFit: 'cover' }}
-                  />
-                )}
-                <div style={{
-                  position: 'absolute', inset: 0,
-                  background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 50%)',
-                }} />
-                {g.is_new && (
-                  <span style={{
-                    position: 'absolute', top: 10, left: 10,
-                    background: '#22c55e', color: '#fff',
-                    fontSize: 10, fontWeight: 700,
-                    padding: '3px 8px', borderRadius: 4,
-                    textTransform: 'uppercase',
-                  }}>New</span>
-                )}
-                <div style={{ position: 'absolute', bottom: 12, left: 12, right: 12, textAlign: 'left' }}>
-                  <p style={{
-                    fontSize: 14, fontWeight: 600, color: '#fff',
-                    marginBottom: 2, overflow: 'hidden',
-                    textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                  }}>{g.name}</p>
-                  <p style={{ fontSize: 12, color: '#9898aa' }}>
-                    {cap(g.category_slug)}
-                    {g.member_count > 0 && ` · ${fmt(g.member_count)}`}
-                  </p>
-                </div>
-              </Link>
+              <GroupCard
+                key={g.id}
+                href={`/${g.slug}`}
+                title={g.name}
+                category={cap(g.category_slug)}
+                image={g.thumbnail_url}
+                count={g.member_count}
+                isNew={g.is_new}
+              />
             ))}
           </div>
 
