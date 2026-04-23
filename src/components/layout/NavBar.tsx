@@ -8,6 +8,7 @@ import Image from 'next/image'
 
 export function NavBar() {
   const [open, setOpen] = useState(false)
+  const [langOpen, setLangOpen] = useState(false)
 
   return (
     <header style={{
@@ -21,7 +22,13 @@ export function NavBar() {
       }}>
         {/* Logo */}
         <Link href="/" style={{ marginRight: 12, flexShrink: 0, lineHeight: 0 }}>
-          <Image src="/logo.png" alt="GroupsPorn" width={120} height={28} className="logo" style={{ objectFit: 'contain' }} />
+          <Image
+            src="/logo.png"
+            alt="GroupsPorn"
+            width={160}
+            height={36}
+            style={{ objectFit: 'contain', height: 'auto', maxHeight: 36 }}
+          />
         </Link>
 
         {/* Desktop nav links */}
@@ -55,7 +62,7 @@ export function NavBar() {
             <LogIn size={14} /> Login
           </Link>
 
-          {/* Hamburger — shown on mobile, hidden on desktop via CSS */}
+          {/* Hamburger */}
           <button
             onClick={() => setOpen(o => !o)}
             className="nav-mobile-btn"
@@ -69,13 +76,36 @@ export function NavBar() {
             {open ? <X size={22} /> : <Menu size={22} />}
           </button>
 
-          {/* Flag — visible on BOTH desktop and mobile */}
-          <span className="nav-flag" style={{
-            display: 'flex', alignItems: 'center',
-            fontSize: 20, cursor: 'pointer', userSelect: 'none',
-          }} title="Language: English">
-            🇺🇸
-          </span>
+          {/* Flag */}
+          <div style={{ position: 'relative' }}>
+            <button
+              onClick={() => setLangOpen(o => !o)}
+              style={{
+                background: 'none', border: 'none', cursor: 'pointer',
+                display: 'flex', alignItems: 'center', gap: 4,
+                fontSize: 20, padding: 4, color: '#9898aa',
+              }}
+            >
+              🇺🇸 <span style={{ fontSize: 11 }}>▾</span>
+            </button>
+            {langOpen && (
+              <div style={{
+                position: 'absolute', right: 0, top: '100%',
+                background: '#1a1a1f', border: '1px solid #2a2a32',
+                borderRadius: 8, padding: '8px 0', minWidth: 120, zIndex: 100,
+              }}>
+                {[['🇺🇸', 'English', '/'], ['🇩🇪', 'Deutsch', '/de/'], ['🇪🇸', 'Español', '/es/']].map(([flag, label, href]) => (
+                  <Link key={href} href={href} onClick={() => setLangOpen(false)} style={{
+                    display: 'flex', alignItems: 'center', gap: 8,
+                    padding: '8px 16px', textDecoration: 'none',
+                    color: '#f0f0f5', fontSize: 13,
+                  }}>
+                    {flag} {label}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -86,61 +116,38 @@ export function NavBar() {
           padding: '12px 16px 20px',
           display: 'flex', flexDirection: 'column', gap: 8,
         }}>
-          {/* Groups */}
-          <MobileLink href="/groups" onClick={() => setOpen(false)}
-            icon={<Send size={18} color="#0ea5e9" />}>
-            Groups
-          </MobileLink>
+          <p style={{ fontSize: 11, color: '#5a5a6e', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1, margin: '4px 0 8px' }}>EXPLORE</p>
 
-          {/* Bots */}
-          <MobileLink href="/bots" onClick={() => setOpen(false)}
-            icon={<Lock size={18} color="#0ea5e9" />}>
-            Bots
-          </MobileLink>
+          <MobileLink href="/groups" onClick={() => setOpen(false)} icon={<Send size={18} color="#0ea5e9" />}>Groups</MobileLink>
+          <MobileLink href="/bots" onClick={() => setOpen(false)} icon={<Lock size={18} color="#0ea5e9" />}>Bots</MobileLink>
+          <MobileLink href="/ainsfw" onClick={() => setOpen(false)} icon={<span style={{ fontSize: 18 }}>🔞</span>}>AI NSFW</MobileLink>
 
-          {/* AI NSFW */}
-          <MobileLink href="/ainsfw" onClick={() => setOpen(false)}
-            icon={<span style={{ fontSize: 18, lineHeight: 1 }}>🔞</span>}>
-            AI NSFW
-          </MobileLink>
-
-          {/* OFsearch — pill branca */}
           <Link href="/ofsearch" onClick={() => setOpen(false)} style={{
             display: 'flex', alignItems: 'center', gap: 12,
             padding: '14px 16px', borderRadius: 8,
-            background: '#141417', border: '1px solid #2a2a32',
-            textDecoration: 'none', fontSize: 16, fontWeight: 500,
+            background: '#fff', border: 'none',
+            textDecoration: 'none', fontSize: 16, fontWeight: 700, color: '#0ea5e9',
           }}>
-            <span style={{
-              display: 'inline-flex', alignItems: 'center', gap: 5,
-              background: '#fff', color: '#0ea5e9',
-              padding: '3px 10px', borderRadius: 999,
-              fontSize: 13, fontWeight: 700,
-            }}>
-              <Search size={12} /> OFsearch
-            </span>
+            <Search size={18} color="#0ea5e9" />
+            OFsearch
+            <span style={{ marginLeft: 'auto', fontSize: 18 }}>→</span>
           </Link>
 
-          {/* Articles */}
-          <MobileLink href="/articles" onClick={() => setOpen(false)}
-            icon={<FileText size={18} color="#9898aa" />}>
-            Articles
-          </MobileLink>
+          <MobileLink href="/articles" onClick={() => setOpen(false)} icon={<FileText size={18} color="#9898aa" />}>Articles</MobileLink>
 
-          {/* Divider */}
           <div style={{ height: 1, background: '#2a2a32', margin: '4px 0' }} />
 
-          {/* Add */}
           <Link href="/add" onClick={() => setOpen(false)} style={{
             display: 'flex', alignItems: 'center', gap: 12,
             padding: '14px 16px', borderRadius: 8,
-            background: '#e8356d', border: 'none',
+            background: '#e8356d',
             textDecoration: 'none', fontSize: 16, fontWeight: 700, color: '#fff',
           }}>
-            <Plus size={18} /> Add Group
+            <Plus size={18} /> + Add
           </Link>
 
-          {/* Login */}
+          <p style={{ fontSize: 11, color: '#5a5a6e', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1, margin: '8px 0 4px' }}>ACCOUNT</p>
+
           <Link href="/login" onClick={() => setOpen(false)} style={{
             display: 'flex', alignItems: 'center', gap: 12,
             padding: '14px 16px', borderRadius: 8,
@@ -149,6 +156,21 @@ export function NavBar() {
           }}>
             <LogIn size={18} color="#0ea5e9" /> Login
           </Link>
+
+          <p style={{ fontSize: 11, color: '#5a5a6e', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1, margin: '8px 0 4px' }}>LANGUAGE</p>
+          <div style={{ display: 'flex', gap: 8 }}>
+            {[['🇺🇸', 'EN', '/'], ['🇩🇪', 'DE', '/de/'], ['🇪🇸', 'ES', '/es/']].map(([flag, label, href]) => (
+              <Link key={href} href={href} onClick={() => setOpen(false)} style={{
+                display: 'flex', alignItems: 'center', gap: 6,
+                padding: '8px 12px', borderRadius: 8,
+                background: label === 'EN' ? '#2a2a32' : '#141417',
+                border: '1px solid #2a2a32',
+                textDecoration: 'none', fontSize: 13, color: '#f0f0f5', fontWeight: 600,
+              }}>
+                {flag} {label}
+              </Link>
+            ))}
+          </div>
         </nav>
       )}
     </header>
