@@ -7,7 +7,7 @@ import type { Metadata } from 'next'
 import type { Article } from '@/types/database'
 import { Send, Lock, Sparkles, Search, ChevronRight } from 'lucide-react'
 
-const SITE_NAME = process.env.NEXT_PUBLIC_SITE_NAME || 'EROgram'
+const SITE_NAME = process.env.NEXT_PUBLIC_SITE_NAME || 'GroupsPorn'
 const YEAR = new Date().getFullYear()
 
 export const metadata: Metadata = {
@@ -82,87 +82,60 @@ export default async function HomePage() {
   return (
     <main>
 
-      {/* ═══ HERO + STATS ═══ */}
+      {/* ═══ HERO ═══ */}
       <section
         className="hero-section"
         style={{
           background: 'radial-gradient(ellipse at 50% 0%, rgba(232,53,109,0.15) 0%, transparent 60%)',
+          textAlign: 'center',
         }}
       >
-        <div style={{ maxWidth: 700, margin: '0 auto 48px' }}>
+        {/* Badge */}
+        <div style={{
+          display: 'inline-flex', alignItems: 'center', gap: 9,
+          border: '1px solid #2a2a32', borderRadius: 999,
+          padding: '6px 14px', fontSize: 13, color: '#9898aa',
+          marginBottom: 24, background: 'rgba(20,20,23,0.7)',
+        }}>
+          <span className="pulse-dot-red" />
+          The #1 NSFW &amp; Porn Telegram and AI Directory
+        </div>
 
-          {/* Badge */}
-          <div style={{
-            display: 'inline-flex', alignItems: 'center', gap: 9,
-            border: '1px solid #2a2a32', borderRadius: 999,
-            padding: '6px 14px', fontSize: 13, color: '#9898aa',
-            marginBottom: 24, background: 'rgba(20,20,23,0.7)',
-          }}>
-            <span className="pulse-dot-red" />
-            The #1 NSFW &amp; Porn Telegram and AI Directory
-          </div>
+        {/* H1 */}
+        <h1 className="hero-h1" style={{
+          fontWeight: 900, letterSpacing: '-1px',
+          margin: '0 auto 16px', maxWidth: '100%',
+        }}>
+          Discover NSFW &amp; Porn{' '}
+          Telegram groups,{' '}
+          <span style={{ color: '#e8356d' }}>bots &amp; AI</span>
+        </h1>
 
-          {/* H1 — exact JSX as specified */}
-          <h1
-            className="hero-h1"
-            style={{ textAlign: 'center', fontWeight: 900, letterSpacing: '-1px', margin: '0 auto 16px' }}
-          >
-            Discover <span style={{ whiteSpace: 'nowrap' }}>NSFW &amp; Porn</span>{' '}
-            Telegram groups,{' '}
-            <span style={{ color: '#e8356d' }}>bots &amp; AI</span>
-          </h1>
+        {/* Subtitle */}
+        <p className="hero-subtitle">
+          Your #1 hub for NSFW Telegram groups &amp; bots, AI companions &amp; tools,
+          and 1.8M+ OnlyFans creators. Explore and save your favorites all in one place.
+        </p>
 
-          {/* Subtitle */}
-          <p style={{
-            fontSize: 16, color: '#9898aa', lineHeight: 1.6,
-            maxWidth: 500, margin: '0 auto 36px', textAlign: 'center',
-          }}>
-            Your #1 hub for NSFW Telegram groups &amp; bots, AI companions &amp; tools,
-            and 1.8M+ OnlyFans creators. Explore and save your favorites all in one place.
-          </p>
-
-          {/* 4 CTAs */}
-          <div className="hero-ctas">
-            <Link href="/groups" style={{
-              display: 'inline-flex', alignItems: 'center', gap: 8,
-              background: '#0ea5e9', color: '#fff',
-              padding: '12px 20px', borderRadius: 8,
-              fontWeight: 600, fontSize: 14, textDecoration: 'none', whiteSpace: 'nowrap',
-            }}>
-              <Send size={15} /> Explore Groups
-            </Link>
-            <Link href="/bots" style={{
-              display: 'inline-flex', alignItems: 'center', gap: 8,
-              background: '#0ea5e9', color: '#fff',
-              padding: '12px 20px', borderRadius: 8,
-              fontWeight: 600, fontSize: 14, textDecoration: 'none', whiteSpace: 'nowrap',
-            }}>
-              <Lock size={15} /> Explore Bots
-            </Link>
-            <Link href="/ainsfw" style={{
-              display: 'inline-flex', alignItems: 'center', gap: 8,
-              background: '#e8356d', color: '#fff',
-              padding: '12px 20px', borderRadius: 8,
-              fontWeight: 600, fontSize: 14, textDecoration: 'none', whiteSpace: 'nowrap',
-            }}>
-              <Sparkles size={15} /> Explore AI NSFW
-            </Link>
-            <Link href="/ofsearch" style={{
-              display: 'inline-flex', alignItems: 'center', gap: 8,
-              background: '#0ea5e9', color: '#fff',
-              padding: '12px 20px', borderRadius: 8,
-              fontWeight: 600, fontSize: 14, textDecoration: 'none', whiteSpace: 'nowrap',
-            }}>
-              <Search size={15} />
-              ONLYFANS SEARCH
-              <span style={{ fontSize: 11, opacity: 0.8, fontWeight: 500 }}>+1.8M</span>
-            </Link>
-          </div>
-
+        {/* 4 CTAs */}
+        <div className="hero-ctas" style={{ marginBottom: 40 }}>
+          <Link href="/groups" className="cta-btn cta-blue">
+            <Send size={15} /> Explore Groups
+          </Link>
+          <Link href="/bots" className="cta-btn cta-blue">
+            <Lock size={15} /> Explore Bots
+          </Link>
+          <Link href="/ainsfw" className="cta-btn cta-red">
+            <Sparkles size={15} /> Explore AI NSFW
+          </Link>
+          <Link href="/ofsearch" className="cta-btn cta-blue">
+            <Search size={15} />
+            ONLYFANS SEARCH <span style={{ fontSize: 11, opacity: 0.8, fontWeight: 500 }}>+1.8M creators</span>
+          </Link>
         </div>
 
         {/* Stats */}
-        <div className="stats-grid" style={{ maxWidth: 800, margin: '0 auto' }}>
+        <div className="stats-grid" style={{ maxWidth: 860, margin: '0 auto' }}>
           <StatCard value="+5K"       label="Groups" />
           <StatCard value="0"         label="Visiting Now"      pulse />
           <StatCard value="4,981,220" label="Views"             pulse />
@@ -175,7 +148,7 @@ export default async function HomePage() {
       {fresh.length > 0 && (
         <section style={{ padding: '64px 24px', textAlign: 'center' }}>
 
-          <h2 style={{ fontSize: 40, fontWeight: 800, color: '#f0f0f5', marginBottom: 8 }}>
+          <h2 className="section-title">
             Fresh <span style={{ color: '#e8356d' }}>New Additions</span>
           </h2>
           <p style={{ color: '#9898aa', fontSize: 14, marginBottom: 32 }}>
@@ -193,16 +166,14 @@ export default async function HomePage() {
                 {g.thumbnail_url && (
                   <Image
                     src={g.thumbnail_url} alt={g.name} fill
-                    sizes="(max-width: 768px) 50vw, (max-width: 900px) 33vw, 280px"
+                    sizes="(max-width: 640px) 50vw, 25vw"
                     style={{ objectFit: 'cover' }}
                   />
                 )}
-                {/* Gradient */}
                 <div style={{
-                  position: 'absolute', bottom: 0, left: 0, right: 0, height: '60%',
-                  background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%)',
+                  position: 'absolute', inset: 0,
+                  background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 50%)',
                 }} />
-                {/* NEW badge */}
                 {g.is_new && (
                   <span style={{
                     position: 'absolute', top: 10, left: 10,
@@ -212,7 +183,6 @@ export default async function HomePage() {
                     textTransform: 'uppercase',
                   }}>New</span>
                 )}
-                {/* Info */}
                 <div style={{ position: 'absolute', bottom: 12, left: 12, right: 12, textAlign: 'left' }}>
                   <p style={{
                     fontSize: 14, fontWeight: 600, color: '#fff',
@@ -243,7 +213,7 @@ export default async function HomePage() {
       {/* ═══ CURATED TOP LISTS ═══ */}
       <section style={{ padding: '64px 24px', textAlign: 'center' }}>
 
-        <h2 style={{ fontSize: 40, fontWeight: 800, color: '#f0f0f5', marginBottom: 32 }}>
+        <h2 className="section-title">
           Curated <span style={{ color: '#e8356d' }}>Top Lists</span>
         </h2>
 
@@ -283,7 +253,7 @@ export default async function HomePage() {
       {articles.length > 0 && (
         <section style={{ padding: '64px 24px', textAlign: 'center' }}>
 
-          <h2 style={{ fontSize: 40, fontWeight: 800, color: '#f0f0f5', marginBottom: 32 }}>
+          <h2 className="section-title">
             Latest <span style={{ color: '#e8356d' }}>Articles</span>
           </h2>
 
@@ -342,7 +312,7 @@ export default async function HomePage() {
       {/* ═══ FAQ ═══ */}
       <section style={{ padding: '64px 24px', textAlign: 'center' }}>
 
-        <h2 style={{ fontSize: 40, fontWeight: 800, color: '#f0f0f5', marginBottom: 32 }}>
+        <h2 className="section-title">
           Frequently Asked <span style={{ color: '#e8356d' }}>Questions</span>
         </h2>
 
@@ -386,9 +356,9 @@ function StatCard({ value, label, pulse = false }: { value: string; label: strin
   return (
     <div style={{
       background: '#141417', border: '1px solid #2a2a32',
-      borderRadius: 12, padding: '20px 28px', textAlign: 'center',
+      borderRadius: 12, padding: '20px 16px', textAlign: 'center',
     }}>
-      <p style={{ fontSize: 32, fontWeight: 800, color: '#f0f0f5', marginBottom: 4 }}>{value}</p>
+      <p style={{ fontSize: 28, fontWeight: 800, color: '#f0f0f5', marginBottom: 4 }}>{value}</p>
       <p style={{
         fontSize: 11, color: '#9898aa', textTransform: 'uppercase',
         letterSpacing: '1px', display: 'flex', alignItems: 'center',
