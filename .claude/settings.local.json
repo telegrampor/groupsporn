@@ -14,14 +14,7 @@
       "Bash(py -m py_compile scripts/scraper/erogram_scraper.py)",
       "Bash(git add *)",
       "Bash(git commit *)",
-      "Bash(git push *)",
-      "Bash(claude mcp *)",
-      "Bash(curl -s -X POST \"https://api.firecrawl.dev/v1/scrape\" -H \"Authorization: Bearer fc-2d7ac52b27d84f6b955857d9e4769b53\" -H \"Content-Type: application/json\" -d \"{\\\\\"url\\\\\":\\\\\"https://erogram.pro/\\\\\",\\\\\"formats\\\\\":[\\\\\"html\\\\\"],\\\\\"waitFor\\\\\":3000}\" -o C:/nsfw-directory/erogram_raw.json)",
-      "Bash(node *)",
-      "Bash(del C:\\\\nsfw-directory\\\\erogram_raw.json C:\\\\nsfw-directory\\\\erogram_page.html)",
-      "Bash(sed 's/\\\\\\\\\"/\"/g')",
-      "Bash(sed 's/\\\\\\\\n/\\\\n/g')",
-      "Read(//tmp/**)"
+      "Bash(git push *)"
     ]
   }
 }

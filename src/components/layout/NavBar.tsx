@@ -1,204 +1,313 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import type { ReactNode } from 'react'
 import type { User } from '@supabase/supabase-js'
 import Link from 'next/link'
+import { Send, Lock, Sparkles, Search, Plus, LogIn, LogOut, Menu, X, FileText } from 'lucide-react'
+import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
 
 export function NavBar() {
-  const [open, setOpen]   = useState(false)
-  const [user, setUser]   = useState<User | null>(null)
+  const [open, setOpen] = useState(false)
+  const [langOpen, setLangOpen] = useState(false)
+  const [user, setUser] = useState<User | null>(null)
 
   useEffect(() => {
     const supabase = createClient()
-    supabase.auth.getSession().then(({ data: { session } }) => setUser(session?.user ?? null))
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, s) => setUser(s?.user ?? null))
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null)
+    })
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null)
+    })
+
     return () => subscription.unsubscribe()
   }, [])
 
   async function handleLogout() {
-    await createClient().auth.signOut()
+    const supabase = createClient()
+    await supabase.auth.signOut()
     setOpen(false)
   }
 
   const userInitial = user?.email?.[0]?.toUpperCase() ?? '?'
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/[0.06] bg-[#0d0d0d]/95 backdrop-blur-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex justify-between items-center">
-
-        {/* ── Logo ── */}
-        <Link href="/" className="flex-shrink-0">
-          <span className="text-xl font-bold tracking-tight">
-            <span className="text-white">ERO</span><span className="text-red-500">gram</span>
-          </span>
+    <header style={{
+      background: '#0d0d0f',
+      borderBottom: '1px solid #1f1f27',
+      position: 'sticky', top: 0, zIndex: 50,
+    }}>
+      <div style={{
+        maxWidth: 1280, margin: '0 auto', padding: '0 20px',
+        display: 'flex', alignItems: 'center', height: 56, gap: 8,
+      }}>
+        {/* Logo */}
+        <Link href="/" style={{ marginRight: 12, flexShrink: 0, lineHeight: 0 }}>
+          <Image
+            src="/logo.png"
+            alt="GroupsPorn"
+            width={160}
+            height={36}
+            style={{ objectFit: 'contain', height: 'auto', maxHeight: 36 }}
+          />
         </Link>
 
-        {/* ── Desktop nav ── */}
-        <div className="hidden md:flex items-center gap-1.5 lg:gap-2">
-          <NavLink href="/groups" color="blue">
-            <TgIcon /> Groups
-          </NavLink>
-          <NavLink href="/bots" color="blue">
-            <BotIcon /> Bots
-          </NavLink>
-          <NavLink href="/ainsfw" color="blue">
-            🔞 AI NSFW
-          </NavLink>
+        {/* Desktop nav links */}
+        <nav className="nav-desktop" style={{ alignItems: 'center', gap: 4, flex: 1 }}>
+          <NavLink href="/#groups" icon={<Send size={13} />}>Groups</NavLink>
+          <NavLink href="/bots"    icon={<Lock size={13} />}>Bots</NavLink>
+          <NavLink href="/ainsfw"  icon={<Sparkles size={13} />}>🔞 AI NSFW</NavLink>
+          <NavLink href="/onlyfanssearch" pill>OFsearch</NavLink>
+          <NavLink href="/#articles" icon={<FileText size={13} />}>Articles</NavLink>
+        </nav>
 
-          {/* OFsearch — white pill */}
-          <Link href="/onlyfanssearch"
-            className="inline-block px-3.5 py-1.5 rounded-xl bg-white hover:bg-gray-50 border border-gray-200 shadow-sm transition-all whitespace-nowrap">
-            <span className="text-sm font-bold text-[#00AFF0]">OFsearch</span>
-          </Link>
-
-          {/* Articles — subtle white */}
-          <Link href="/#articles"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-semibold transition-all whitespace-nowrap text-white/80 bg-white/[0.07] border border-white/[0.10] hover:bg-white/[0.13] hover:text-white">
-            📰 Articles
-          </Link>
-        </div>
-
-        {/* ── Right actions ── */}
-        <div className="flex items-center gap-2">
-          <Link href="/add"
-            className="hidden md:flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[13px] font-semibold text-[#4ab3f4] bg-[#0088cc]/[0.10] border border-[#0088cc]/25 hover:bg-[#0088cc]/[0.18] hover:text-[#6ec6f7] transition-all whitespace-nowrap">
-            ＋ Add
+        {/* Right actions */}
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 8,
+          marginLeft: 'auto', flexShrink: 0,
+        }}>
+          <Link href="/add" className="nav-add-btn" style={{
+            display: 'flex', alignItems: 'center', gap: 5,
+            background: '#e8356d', color: '#fff',
+            padding: '6px 14px', borderRadius: 6,
+            fontWeight: 700, fontSize: 13, textDecoration: 'none',
+          }}>
+            <Plus size={14} /> Add
           </Link>
 
           {user ? (
-            <div className="hidden md:flex items-center gap-2">
-              <div className="w-7 h-7 rounded-full bg-[#b31b1b] text-white text-xs font-bold flex items-center justify-center">
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }} className="nav-login-btn">
+              <div style={{
+                width: 28, height: 28, borderRadius: '50%',
+                background: '#e8356d', color: '#fff',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 12, fontWeight: 700, flexShrink: 0,
+              }}>
                 {userInitial}
               </div>
-              <button onClick={handleLogout}
-                className="text-[13px] text-[#999] hover:text-white transition-colors">
-                Logout
+              <button
+                onClick={handleLogout}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 5,
+                  background: 'none', border: 'none', cursor: 'pointer',
+                  color: '#9898aa', fontSize: 13, padding: 0,
+                }}
+              >
+                <LogOut size={14} /> Logout
               </button>
             </div>
           ) : (
-            <Link href="/login"
-              className="hidden md:flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[13px] font-semibold text-[#4ab3f4] bg-[#0088cc]/[0.10] border border-[#0088cc]/25 hover:bg-[#0088cc]/[0.18] hover:text-[#6ec6f7] transition-all whitespace-nowrap">
-              Login
+            <Link href="/login" className="nav-login-btn" style={{
+              display: 'flex', alignItems: 'center', gap: 5,
+              color: '#9898aa', fontSize: 13, textDecoration: 'none',
+            }}>
+              <LogIn size={14} /> Login
             </Link>
           )}
 
           {/* Hamburger */}
-          <button onClick={() => setOpen(o => !o)}
-            className="md:hidden flex flex-col gap-1.5 p-1.5 rounded-md"
-            aria-label="Toggle menu">
-            <span className={`w-5 h-0.5 bg-white/70 rounded-full transition-all ${open ? 'rotate-45 translate-y-2' : ''}`} />
-            <span className={`w-5 h-0.5 bg-white/70 rounded-full transition-all ${open ? 'opacity-0' : ''}`} />
-            <span className={`w-5 h-0.5 bg-white/70 rounded-full transition-all ${open ? '-rotate-45 -translate-y-2' : ''}`} />
+          <button
+            onClick={() => setOpen(o => !o)}
+            className="nav-mobile-btn"
+            aria-label="Toggle menu"
+            style={{
+              background: 'none', border: 'none', color: '#f0f0f5',
+              cursor: 'pointer', padding: 4,
+              display: 'flex', alignItems: 'center',
+            }}
+          >
+            {open ? <X size={22} /> : <Menu size={22} />}
           </button>
+
+          {/* Language selector */}
+          <div style={{ position: 'relative' }}>
+            <button
+              onClick={() => setLangOpen(o => !o)}
+              style={{
+                background: 'none', border: 'none', cursor: 'pointer',
+                display: 'flex', alignItems: 'center', gap: 4,
+                fontSize: 20, padding: 4, color: '#9898aa',
+              }}
+            >
+              🇺🇸 <span style={{ fontSize: 11 }}>▾</span>
+            </button>
+            {langOpen && (
+              <div style={{
+                position: 'absolute', right: 0, top: '100%',
+                background: '#1a1a1f', border: '1px solid #2a2a32',
+                borderRadius: 8, padding: '8px 0', minWidth: 120, zIndex: 100,
+              }}>
+                {([['🇺🇸', 'English', '/'], ['🇩🇪', 'Deutsch', '/de/'], ['🇪🇸', 'Español', '/es/']] as const).map(([flag, label, href]) => (
+                  <Link key={href} href={href} onClick={() => setLangOpen(false)} style={{
+                    display: 'flex', alignItems: 'center', gap: 8,
+                    padding: '8px 16px', textDecoration: 'none',
+                    color: '#f0f0f5', fontSize: 13,
+                  }}>
+                    {flag} {label}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* ── Mobile drawer ── */}
-      <div className={`md:hidden overflow-hidden transition-all duration-300 ${open ? 'max-h-screen' : 'max-h-0'}`}>
-        <div className="px-4 pb-6 pt-2 flex flex-col gap-2 border-t border-white/[0.06] bg-[#0d0d0d]">
+      {/* Mobile dropdown */}
+      {open && (
+        <nav style={{
+          background: '#0d0d0f', borderTop: '1px solid #2a2a32',
+          padding: '12px 16px 20px',
+          display: 'flex', flexDirection: 'column', gap: 8,
+        }}>
+          <p style={{ fontSize: 11, color: '#5a5a6e', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1, margin: '4px 0 8px' }}>EXPLORE</p>
 
-          <p className="px-1 text-[10px] font-black uppercase tracking-widest text-white/25 mt-2 mb-1">Explore</p>
+          <MobileLink href="/#groups"   onClick={() => setOpen(false)} icon={<Send size={18} color="#0ea5e9" />}>Groups</MobileLink>
+          <MobileLink href="/bots"      onClick={() => setOpen(false)} icon={<Lock size={18} color="#0ea5e9" />}>Bots</MobileLink>
+          <MobileLink href="/ainsfw"    onClick={() => setOpen(false)} icon={<span style={{ fontSize: 18 }}>🔞</span>}>AI NSFW</MobileLink>
 
-          <MobileLink href="/groups" onClick={() => setOpen(false)}>
-            <TgIcon /> Groups
-          </MobileLink>
-          <MobileLink href="/bots" onClick={() => setOpen(false)}>
-            <BotIcon /> Bots
-          </MobileLink>
-          <MobileLink href="/ainsfw" onClick={() => setOpen(false)}>
-            🔞 AI NSFW
-          </MobileLink>
-
-          <Link href="/onlyfanssearch" onClick={() => setOpen(false)}
-            className="flex items-center justify-between px-4 py-2.5 rounded-lg text-[14px] bg-white border border-gray-200 font-bold">
-            <span className="text-[#00AFF0]">OFsearch</span>
-            <span className="text-[#999] text-xs">+1.8M creators →</span>
+          <Link href="/onlyfanssearch" onClick={() => setOpen(false)} style={{
+            display: 'flex', alignItems: 'center', gap: 12,
+            padding: '14px 16px', borderRadius: 8,
+            background: '#fff', border: 'none',
+            textDecoration: 'none', fontSize: 16, fontWeight: 700, color: '#0ea5e9',
+          }}>
+            <Search size={18} color="#0ea5e9" />
+            OFsearch
+            <span style={{ marginLeft: 'auto', fontSize: 18 }}>→</span>
           </Link>
 
-          <MobileLink href="/#articles" onClick={() => setOpen(false)}>
-            📰 Articles
-          </MobileLink>
+          <MobileLink href="/#articles" onClick={() => setOpen(false)} icon={<FileText size={18} color="#9898aa" />}>Articles</MobileLink>
 
-          <div className="h-px bg-white/[0.06] my-1" />
+          <div style={{ height: 1, background: '#2a2a32', margin: '4px 0' }} />
 
-          <Link href="/add" onClick={() => setOpen(false)}
-            className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-[14px] font-bold bg-[#b31b1b] text-white">
-            ＋ Add Listing
+          <Link href="/add" onClick={() => setOpen(false)} style={{
+            display: 'flex', alignItems: 'center', gap: 12,
+            padding: '14px 16px', borderRadius: 8,
+            background: '#e8356d',
+            textDecoration: 'none', fontSize: 16, fontWeight: 700, color: '#fff',
+          }}>
+            <Plus size={18} /> + Add
           </Link>
 
-          <p className="px-1 text-[10px] font-black uppercase tracking-widest text-white/25 mt-2 mb-1">Account</p>
+          <p style={{ fontSize: 11, color: '#5a5a6e', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1, margin: '8px 0 4px' }}>ACCOUNT</p>
 
           {user ? (
             <>
-              <div className="flex items-center gap-3 px-4 py-2.5 rounded-lg bg-white/5 border border-white/10 text-sm text-[#999]">
-                <div className="w-8 h-8 rounded-full bg-[#b31b1b] text-white text-sm font-bold flex items-center justify-center shrink-0">
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: 12,
+                padding: '14px 16px', borderRadius: 8,
+                background: '#141417', border: '1px solid #2a2a32',
+                fontSize: 14, color: '#9898aa',
+              }}>
+                <div style={{
+                  width: 32, height: 32, borderRadius: '50%',
+                  background: '#e8356d', color: '#fff',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: 13, fontWeight: 700, flexShrink: 0,
+                }}>
                   {userInitial}
                 </div>
-                <span className="truncate">{user.email}</span>
+                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {user.email}
+                </span>
               </div>
-              <button onClick={handleLogout}
-                className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-[14px] font-semibold bg-white/5 border border-white/10 text-[#b31b1b] w-full">
-                Logout
+              <button
+                onClick={handleLogout}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 12,
+                  padding: '14px 16px', borderRadius: 8,
+                  background: '#141417', border: '1px solid #2a2a32',
+                  cursor: 'pointer', fontSize: 16, fontWeight: 500, color: '#e8356d',
+                  width: '100%',
+                }}
+              >
+                <LogOut size={18} color="#e8356d" /> Logout
               </button>
             </>
           ) : (
-            <MobileLink href="/login" onClick={() => setOpen(false)}>
-              Login
-            </MobileLink>
+            <Link href="/login" onClick={() => setOpen(false)} style={{
+              display: 'flex', alignItems: 'center', gap: 12,
+              padding: '14px 16px', borderRadius: 8,
+              background: '#141417', border: '1px solid #2a2a32',
+              textDecoration: 'none', fontSize: 16, fontWeight: 500, color: '#0ea5e9',
+            }}>
+              <LogIn size={18} color="#0ea5e9" /> Login
+            </Link>
           )}
 
-          <p className="px-1 text-[10px] font-black uppercase tracking-widest text-white/25 mt-2 mb-1">Language</p>
-          <div className="flex gap-2">
+          <p style={{ fontSize: 11, color: '#5a5a6e', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1, margin: '8px 0 4px' }}>LANGUAGE</p>
+          <div style={{ display: 'flex', gap: 8 }}>
             {([['🇺🇸', 'EN', '/'], ['🇩🇪', 'DE', '/de/'], ['🇪🇸', 'ES', '/es/']] as const).map(([flag, label, href]) => (
-              <Link key={href} href={href} onClick={() => setOpen(false)}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-colors ${
-                  label === 'EN' ? 'bg-white/10 text-white' : 'bg-white/5 text-white/50 hover:text-white'
-                }`}>
+              <Link key={href} href={href} onClick={() => setOpen(false)} style={{
+                display: 'flex', alignItems: 'center', gap: 6,
+                padding: '8px 12px', borderRadius: 8,
+                background: label === 'EN' ? '#2a2a32' : '#141417',
+                border: '1px solid #2a2a32',
+                textDecoration: 'none', fontSize: 13, color: '#f0f0f5', fontWeight: 600,
+              }}>
                 {flag} {label}
               </Link>
             ))}
           </div>
-        </div>
-      </div>
-    </nav>
+        </nav>
+      )}
+    </header>
   )
 }
 
-function NavLink({ href, children, color = 'blue' }: {
-  href: string; children: React.ReactNode; color?: 'blue' | 'white'
+function MobileLink({
+  href, children, icon, onClick,
+}: {
+  href: string
+  children: ReactNode
+  icon: ReactNode
+  onClick: () => void
 }) {
   return (
-    <Link href={href}
-      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-semibold text-[#4ab3f4] bg-[#0088cc]/[0.10] border border-[#0088cc]/25 hover:bg-[#0088cc]/[0.18] hover:text-[#6ec6f7] transition-all whitespace-nowrap">
-      {children}
+    <Link href={href} onClick={onClick} style={{
+      display: 'flex', alignItems: 'center', gap: 12,
+      padding: '14px 16px', borderRadius: 8,
+      background: '#141417', border: '1px solid #2a2a32',
+      textDecoration: 'none', fontSize: 16, fontWeight: 500, color: '#f0f0f5',
+    }}>
+      {icon} {children}
     </Link>
   )
 }
 
-function MobileLink({ href, children, onClick }: {
-  href: string; children: React.ReactNode; onClick: () => void
+function NavLink({
+  href, children, icon, pill,
+}: {
+  href: string
+  children: ReactNode
+  icon?: ReactNode
+  pill?: boolean
 }) {
+  if (pill) {
+    return (
+      <Link href={href} style={{
+        display: 'inline-flex', alignItems: 'center', gap: 5,
+        background: '#ffffff', color: '#0d0d0f',
+        padding: '4px 12px', borderRadius: 999,
+        fontWeight: 700, fontSize: 13, textDecoration: 'none', flexShrink: 0,
+      }}>
+        <Search size={12} /> {children}
+      </Link>
+    )
+  }
   return (
-    <Link href={href} onClick={onClick}
-      className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-[14px] font-semibold text-[#4ab3f4] bg-[#0088cc]/[0.10] border border-[#0088cc]/25 hover:bg-[#0088cc]/[0.18] hover:text-[#6ec6f7] transition-all">
-      {children}
+    <Link href={href} className="nav-link" style={{
+      display: 'inline-flex', alignItems: 'center', gap: 5,
+      color: '#9898aa', textDecoration: 'none',
+      padding: '6px 10px', borderRadius: 8,
+      fontSize: 13, fontWeight: 500, transition: 'color 0.15s',
+      whiteSpace: 'nowrap',
+    }}>
+      {icon} {children}
     </Link>
-  )
-}
-
-function TgIcon() {
-  return (
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-2.02 9.532c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L6.21 14.238l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.606.348z" />
-    </svg>
-  )
-}
-
-function BotIcon() {
-  return (
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7H3a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2zM7 14v4h10v-4H7zM9 16a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm6 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" />
-    </svg>
   )
 }
