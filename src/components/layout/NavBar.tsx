@@ -50,8 +50,8 @@ export function NavBar() {
           <Image
             src="/logo.png"
             alt="GroupsPorn"
-            width={160}
-            height={36}
+            width={200}
+            height={45}
             style={{ objectFit: 'contain', height: 'auto', maxHeight: 36 }}
           />
         </Link>

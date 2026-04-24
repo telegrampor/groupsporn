@@ -109,7 +109,7 @@ function StatCard({ value, label, pulse = false }: {
   return (
     <div style={{
       background: '#141417', border: '1px solid #2a2a32',
-      borderRadius: 12, padding: '20px 16px', textAlign: 'center',
+      borderRadius: 12, padding: '24px 16px', textAlign: 'center',
     }}>
       <p style={{ fontSize: 28, fontWeight: 800, color: '#f0f0f5', marginBottom: 4 }}>{value}</p>
       <p style={{
