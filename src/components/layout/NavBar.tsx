@@ -5,7 +5,6 @@ import type { ReactNode } from 'react'
 import type { User } from '@supabase/supabase-js'
 import Link from 'next/link'
 import { Send, Lock, Sparkles, Search, Plus, LogIn, LogOut, Menu, X, FileText } from 'lucide-react'
-import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
 
 export function NavBar() {
@@ -42,14 +41,14 @@ export function NavBar() {
         maxWidth: 1280, margin: '0 auto', padding: '0 20px',
         display: 'flex', alignItems: 'center', height: 64, gap: 8,
       }}>
-        {/* Logo */}
+
+        {/* Logo — usa <img> simples para respeitar CSS */}
         <Link href="/" style={{ marginRight: 12, flexShrink: 0, lineHeight: 0 }}>
-          <Image
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
             src="/logo.png"
             alt="GroupsPorn"
-            width={220}
-            height={50}
-            style={{ objectFit: 'contain', width: 'auto', height: 42 }}
+            className="site-logo"
           />
         </Link>
 
@@ -142,13 +141,13 @@ export function NavBar() {
           display: 'flex', flexDirection: 'column', gap: 8,
         }}>
           <p style={{ fontSize: 11, color: '#5a5a6e', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1, margin: '4px 0 8px' }}>EXPLORE</p>
-          <MobileLink href="/#groups"    onClick={() => setOpen(false)} icon={<Send size={18} color="#0ea5e9" />}>Groups</MobileLink>
-          <MobileLink href="/bots"       onClick={() => setOpen(false)} icon={<Lock size={18} color="#0ea5e9" />}>Bots</MobileLink>
-          <MobileLink href="/ainsfw"     onClick={() => setOpen(false)} icon={<span style={{ fontSize: 18 }}>🔞</span>}>AI NSFW</MobileLink>
+          <MobileLink href="/#groups"   onClick={() => setOpen(false)} icon={<Send size={18} color="#0ea5e9" />}>Groups</MobileLink>
+          <MobileLink href="/bots"      onClick={() => setOpen(false)} icon={<Lock size={18} color="#0ea5e9" />}>Bots</MobileLink>
+          <MobileLink href="/ainsfw"    onClick={() => setOpen(false)} icon={<span style={{ fontSize: 18 }}>🔞</span>}>AI NSFW</MobileLink>
           <Link href="/onlyfanssearch" onClick={() => setOpen(false)} style={{
             display: 'flex', alignItems: 'center', gap: 12,
-            padding: '14px 16px', borderRadius: 8,
-            background: '#fff', textDecoration: 'none', fontSize: 16, fontWeight: 700, color: '#0ea5e9',
+            padding: '14px 16px', borderRadius: 8, background: '#fff',
+            textDecoration: 'none', fontSize: 16, fontWeight: 700, color: '#0ea5e9',
           }}>
             <Search size={18} color="#0ea5e9" /> OFsearch
             <span style={{ marginLeft: 'auto', fontSize: 18 }}>→</span>
