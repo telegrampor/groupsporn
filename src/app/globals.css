@@ -180,7 +180,7 @@ img.logo { height: auto; display: block; }
 @media (max-width: 768px) { .hero-section { padding: 40px 16px 36px; } }
 
 .hero-h1 { font-size: 60px; font-weight: 900; line-height: 1.1; margin: 0 auto 16px; }
-@media (max-width: 768px) { .hero-h1 { font-size: 32px; line-height: 1.15; } }
+@media (max-width: 768px) { .hero-h1 { font-size: 22px; line-height: 1.2; } }
 
 .hero-subtitle {
   font-size: 16px; color: #999; line-height: 1.6;
@@ -212,8 +212,13 @@ img.logo { height: auto; display: block; }
 
 /* Stats */
 .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; width: 100%; }
-@media (max-width: 768px) {
-  .stats-grid { grid-template-columns: repeat(2,1fr); max-width: 100% !important; }
+@media (max-width: 768px) { 
+  .stats-grid { 
+    grid-template-columns: repeat(2,1fr);
+    width: 100%;
+    overflow: visible;
+    max-width: none !important;
+  } 
 }
 
 /* ════════════════════════════════════════════════
